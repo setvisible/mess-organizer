@@ -13,6 +13,9 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 
 public class SoftwareOverviewController {
+
+	private MainApplication mainApp;
+
 	@FXML
 	private TableView<Software> softwareTable;
 	@FXML
@@ -32,7 +35,6 @@ public class SoftwareOverviewController {
 	@FXML
 	private Label sourceNameLabel;
 
-	private MainApplication mainApp;
 
 	public SoftwareOverviewController() {
 	}
