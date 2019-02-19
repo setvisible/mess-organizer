@@ -1,6 +1,7 @@
 package com.github.setvisible.messorganizer.ui;
 
 import java.io.File;
+import java.util.ResourceBundle;
 
 import com.github.setvisible.messorganizer.MainApplication;
 
@@ -72,16 +73,19 @@ public class RootLayoutController {
         }
     }
 
-    @FXML
-    private void handleAbout() {
-        Alert alert = new Alert(AlertType.INFORMATION);
-        alert.setTitle("Mess Organizer");
-        alert.setHeaderText("About");
-        alert.setContentText("Author: Sebastien Vavassori\nWebsite: https://github.com/setvisible");
-
-        alert.showAndWait();
-    }
-
+	@FXML
+	private void handleAbout() {
+		final Alert alert = new Alert(AlertType.INFORMATION);
+		alert.setTitle("Mess Organizer");
+		alert.setHeaderText(ResourceBundle.getBundle("locale.en_US").getString("about"));
+		final String content = ResourceBundle.getBundle("locale.en_US").getString("about.author") //
+				+ ":\t Sebastien Vavassori" + "\n\n" //
+				+ ResourceBundle.getBundle("locale.en_US").getString("about.website") //
+				+ ":\t https://github.com/setvisible";
+		alert.setContentText(content);
+		alert.showAndWait();
+	}
+	
     @FXML
     private void handleExit() {
         System.exit(0);
