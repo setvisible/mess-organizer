@@ -25,10 +25,20 @@
 		<maven.compiler.source>${java.version}</maven.compiler.source>
 		<maven.compiler.target>${java.version}</maven.compiler.target>
 
+		<afterburner.version>1.6.0</afterburner.version>
 		<commons.io.version>1.3.2</commons.io.version>
 	</properties>
 
 	<dependencies>
+
+		<!-- Afterburner.fx -->
+		<!-- The Opinionated JavaFX Productivity Igniter -->
+		<dependency>
+			<groupId>com.airhacks</groupId>
+			<artifactId>afterburner.fx</artifactId>
+			<version>${afterburner.version}</version>
+			<scope>compile</scope>
+		</dependency>
 
 		<!-- Apache Commons IO -->
 		<!-- Library of utilities to assist with developing IO functionality -->
