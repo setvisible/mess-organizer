@@ -10,8 +10,8 @@ import javax.xml.bind.Unmarshaller;
 
 import com.github.setvisible.messorganizer.core.Software;
 import com.github.setvisible.messorganizer.core.SoftwareListWrapper;
-import com.github.setvisible.messorganizer.ui.RootLayoutController;
-import com.github.setvisible.messorganizer.ui.SoftwareOverviewController;
+import com.github.setvisible.messorganizer.ui.RootLayoutPresenter;
+import com.github.setvisible.messorganizer.ui.RootLayoutView;
 import com.github.setvisible.messorganizer.ui.VersionDateStatisticsController;
 
 import javafx.collections.FXCollections;
@@ -22,14 +22,12 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.BorderPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 public class MainApplication {
 
 	private Stage primaryStage;
-	private BorderPane rootLayout;
 
 	/**
 	 * The data as an observable list of Software.
@@ -52,69 +50,36 @@ public class MainApplication {
 		softwareData.add(new Software("Martin", "Mueller"));
 	}
 
-	public void start(Stage primaryStage) {
-		this.primaryStage = primaryStage;
-		this.primaryStage.setTitle("Mess Organizer");
+	public void start(Stage stage) {
+
+		final RootLayoutView appView = new RootLayoutView();
+
+		final Scene scene = new Scene(appView.getView());
+		stage.setTitle("Mess Organizer");
 
 		// Set the application icon.
-		this.primaryStage.getIcons().add(new Image("images/icon_32x32.png"));
+		stage.getIcons().add(new Image("images/icon_32x32.png"));
 
-		initRootLayout();
+		// Set the application style.
+		final String uri = getClass().getResource("/DarkTheme.css").toExternalForm();
+		scene.getStylesheets().add(uri);
 
-		showSoftwareOverview();
-	}
+		stage.setScene(scene);
+		stage.show();
 
-	/**
-	 * Initializes the root layout.
-	 */
-	public void initRootLayout() {
-		try {
-			// Load root layout from fxml file.
-			FXMLLoader loader = new FXMLLoader();
-			loader.setLocation(MainApplication.class.getResource("ui/RootLayout.fxml"));
-			rootLayout = (BorderPane) loader.load();
+		this.primaryStage = stage;
 
-			// Show the scene containing the root layout.
-			Scene scene = new Scene(rootLayout);
-			primaryStage.setScene(scene);
-
-			// Give the controller access to the main app.
-			RootLayoutController controller = loader.getController();
-			controller.setMainApp(this);
-
-			primaryStage.show();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		final RootLayoutPresenter appPresenter = (RootLayoutPresenter) appView.getPresenter();
+		appPresenter.setMainApp(this);
 
 		// Try to load last opened software file.
-		File file = getSoftwareFilePath();
+		final File file = getSoftwareFilePath();
 		if (file != null) {
 			loadSoftwareDataFromFile(file);
 		}
 	}
 
-	/**
-	 * Shows the software overview inside the root layout.
-	 */
-	public void showSoftwareOverview() {
-		try {
-			// Load software overview.
-			FXMLLoader loader = new FXMLLoader();
-			loader.setLocation(MainApplication.class.getResource("ui/SoftwareOverview.fxml"));
-			AnchorPane softwareOverview = (AnchorPane) loader.load();
 
-			// Set software overview into the center of root layout.
-			rootLayout.setCenter(softwareOverview);
-
-			// Give the controller access to the main app.
-			SoftwareOverviewController controller = loader.getController();
-			controller.setMainApp(this);
-
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
 
 	/**
 	 * Returns the main stage.
