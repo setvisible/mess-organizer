@@ -27,6 +27,9 @@ hs_err_pid*
 .classpath
 .project
 .settings
-target
+target/
+/dependency-reduced-pom.xml
 .DS_Store
 */.DS_Store
+/.apt_generated/
+/.apt_generated_tests/

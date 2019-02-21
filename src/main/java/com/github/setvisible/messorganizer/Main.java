@@ -3,10 +3,11 @@ package com.github.setvisible.messorganizer;
 import javafx.application.Application;
 import javafx.stage.Stage;
 
-public class Main extends Application {
+public final class Main extends Application {
 
 	@Override
 	public void start(Stage primaryStage) {
+
 		MainApplication app = new MainApplication();
 		app.start(primaryStage);
 	}
