@@ -14,6 +14,7 @@ import com.github.setvisible.messorganizer.ui.MainWindowPresenter;
 import com.github.setvisible.messorganizer.ui.MainWindowView;
 import com.github.setvisible.messorganizer.ui.VersionDateStatisticsController;
 
+import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
@@ -25,7 +26,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
-public class MainApplication {
+public class MainApplication extends Application {
 
 	private Stage primaryStage;
 
@@ -50,6 +51,7 @@ public class MainApplication {
 		softwareData.add(new Software("Martin", "Mueller"));
 	}
 
+	@Override
 	public void start(Stage stage) {
 
 		final MainWindowView appView = new MainWindowView();
