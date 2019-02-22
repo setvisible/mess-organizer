@@ -10,8 +10,8 @@ import javax.xml.bind.Unmarshaller;
 
 import com.github.setvisible.messorganizer.core.Software;
 import com.github.setvisible.messorganizer.core.SoftwareListWrapper;
-import com.github.setvisible.messorganizer.ui.RootLayoutPresenter;
-import com.github.setvisible.messorganizer.ui.RootLayoutView;
+import com.github.setvisible.messorganizer.ui.MainWindowPresenter;
+import com.github.setvisible.messorganizer.ui.MainWindowView;
 import com.github.setvisible.messorganizer.ui.VersionDateStatisticsController;
 
 import javafx.collections.FXCollections;
@@ -52,7 +52,7 @@ public class MainApplication {
 
 	public void start(Stage stage) {
 
-		final RootLayoutView appView = new RootLayoutView();
+		final MainWindowView appView = new MainWindowView();
 
 		final Scene scene = new Scene(appView.getView());
 		stage.setTitle("Mess Organizer");
@@ -69,8 +69,8 @@ public class MainApplication {
 
 		this.primaryStage = stage;
 
-		final RootLayoutPresenter appPresenter = (RootLayoutPresenter) appView.getPresenter();
-		appPresenter.setMainApp(this);
+		final MainWindowPresenter mainWindow = (MainWindowPresenter) appView.getPresenter();
+		mainWindow.setMainApp(this);
 
 		// Try to load last opened software file.
 		final File file = getSoftwareFilePath();

@@ -15,7 +15,7 @@ import javafx.stage.FileChooser;
 /**
  * Main view of the application.
  */
-public class RootLayoutPresenter implements Initializable {
+public class MainWindowPresenter implements Initializable {
 
 	private MainApplication mainApp;
 
