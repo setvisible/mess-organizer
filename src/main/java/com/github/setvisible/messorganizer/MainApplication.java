@@ -1,7 +1,6 @@
 package com.github.setvisible.messorganizer;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.prefs.Preferences;
 
 import javax.xml.bind.JAXBContext;
@@ -12,18 +11,15 @@ import com.github.setvisible.messorganizer.core.Software;
 import com.github.setvisible.messorganizer.core.SoftwareListWrapper;
 import com.github.setvisible.messorganizer.ui.MainWindowPresenter;
 import com.github.setvisible.messorganizer.ui.MainWindowView;
-import com.github.setvisible.messorganizer.ui.VersionDateStatisticsController;
+import com.github.setvisible.messorganizer.ui.dialog.StatisticsDialog;
 
 import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.image.Image;
-import javafx.scene.layout.AnchorPane;
-import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 public class MainApplication extends Application {
@@ -200,31 +196,10 @@ public class MainApplication extends Application {
 		}
 	}
 
-	/**
-	 * Opens a dialog to show birthday statistics.
-	 */
 	public void showStatistics() {
-		try {
-			// Load the fxml file and create a new stage for the popup.
-			FXMLLoader loader = new FXMLLoader();
-			loader.setLocation(MainApplication.class.getResource("ui/VersionDateStatistics.fxml"));
-			AnchorPane page = (AnchorPane) loader.load();
-			Stage dialogStage = new Stage();
-			dialogStage.setTitle("Version Date Statistics");
-			dialogStage.initModality(Modality.WINDOW_MODAL);
-			dialogStage.initOwner(primaryStage);
-			Scene scene = new Scene(page);
-			dialogStage.setScene(scene);
-
-			// Set the softwares into the controller.
-			VersionDateStatisticsController controller = loader.getController();
-			controller.setSoftwareData(softwareData);
-
-			dialogStage.show();
-
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		final StatisticsDialog dialog = new StatisticsDialog(primaryStage);
+		dialog.setSoftwareData(softwareData);
+		dialog.show();
 	}
 
 }
