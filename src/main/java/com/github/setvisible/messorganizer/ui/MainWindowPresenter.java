@@ -20,7 +20,7 @@ public class MainWindowPresenter implements Initializable {
 	private MainApplication mainApp;
 
 	@FXML
-	private MainBodyPresenter mainBodyController;
+	private BodyPresenter bodyController;
 
 	@Override
 	public void initialize(final URL url, final ResourceBundle resourceBundle) {
@@ -30,7 +30,7 @@ public class MainWindowPresenter implements Initializable {
 
 	public void setMainApp(MainApplication mainApp) {
 		this.mainApp = mainApp;
-		mainBodyController.setMainApp(mainApp);
+		bodyController.setMainApp(mainApp);
 	}
 
 	@FXML

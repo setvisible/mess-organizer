@@ -39,4 +39,7 @@
 			</menus>
 		</MenuBar>
 	</top>
+	<center>
+		<fx:include fx:id="body" source="body.fxml" />
+	</center>
 </BorderPane>
