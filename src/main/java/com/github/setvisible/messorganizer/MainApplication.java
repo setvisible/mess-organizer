@@ -7,6 +7,9 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.github.setvisible.messorganizer.core.Software;
 import com.github.setvisible.messorganizer.core.SoftwareListWrapper;
 import com.github.setvisible.messorganizer.ui.MainWindowPresenter;
@@ -23,6 +26,8 @@ import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
 public class MainApplication extends Application {
+
+	private final Logger logger = LoggerFactory.getLogger(MainApplication.class);
 
 	private Stage primaryStage;
 
