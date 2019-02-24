@@ -107,7 +107,7 @@ public class MainWindowPresenter implements Initializable {
 
 	@FXML
 	private void handleExit() {
-		System.exit(0);
+		mainApp.exit();
 	}
 
 	// ****************************************************************************

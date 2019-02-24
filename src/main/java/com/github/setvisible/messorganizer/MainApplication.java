@@ -1,6 +1,8 @@
 package com.github.setvisible.messorganizer;
 
 import java.io.File;
+import java.util.Optional;
+import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 
 import javax.xml.bind.JAXBContext;
@@ -18,12 +20,16 @@ import com.github.setvisible.messorganizer.ui.MainWindowView;
 import com.github.setvisible.messorganizer.ui.dialog.StatisticsDialog;
 
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.image.Image;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 public class MainApplication extends Application {
@@ -68,24 +74,23 @@ public class MainApplication extends Application {
 			this.readSettings();
 		});
 
-		final MainWindowView appView = new MainWindowView();
+		final MainWindowView mainWindowView = new MainWindowView();
 
-		final Scene scene = new Scene(appView.getView());
-		stage.setTitle("Mess Organizer");
+		final Scene scene = new Scene(mainWindowView.getView());
+		primaryStage.setTitle("Mess Organizer");
 
 		// Set the application icon.
-		stage.getIcons().add(new Image("images/icon_32x32.png"));
+		primaryStage.getIcons().add(new Image("images/icon_32x32.png"));
 
 		// Set the application style.
-		final String uri = getClass().getResource("/DarkTheme.css").toExternalForm();
-		scene.getStylesheets().add(uri);
+		// final String uri = getClass().getResource("/DarkTheme.css").toExternalForm();
+		// scene.getStylesheets().add(uri);
 
-		stage.setScene(scene);
-		stage.show();
+		primaryStage.setScene(scene);
+		primaryStage.show();
 
-		this.primaryStage = stage;
 
-		final MainWindowPresenter mainWindow = (MainWindowPresenter) appView.getPresenter();
+		final MainWindowPresenter mainWindow = (MainWindowPresenter) mainWindowView.getPresenter();
 		mainWindow.setMainApp(this);
 		mainWindow.setUserPreference(userPreference);
 
@@ -95,8 +100,6 @@ public class MainApplication extends Application {
 			loadSoftwareDataFromFile(file);
 		}
 	}
-
-
 
 	/**
 	 * Returns the main stage.
@@ -215,10 +218,70 @@ public class MainApplication extends Application {
 		}
 	}
 
+	public void exit() {
+		final Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+		alert.setTitle("Mess Organizer");
+		alert.setHeaderText("Do you really want to exit?");
+		alert.initModality(Modality.APPLICATION_MODAL);
+		alert.initOwner(primaryStage);
+		alert.getButtonTypes().setAll(ButtonType.YES, ButtonType.NO);
+
+		final Button buttonExit = (Button) alert.getDialogPane().lookupButton(ButtonType.YES);
+		buttonExit.setText("Yes");
+		buttonExit.setDefaultButton(false);
+
+		final Button buttonCancel = (Button) alert.getDialogPane().lookupButton(ButtonType.NO);
+		buttonCancel.setText("No");
+
+		final Optional<ButtonType> result = alert.showAndWait();
+		if (result.isPresent() && result.get() == ButtonType.YES) {
+			this.userPreference.writeUserPreference();
+			this.writeSettings();
+			Platform.exit();
+		}
+	}
+
 	public void showStatistics() {
 		final StatisticsDialog dialog = new StatisticsDialog(primaryStage);
 		dialog.setSoftwareData(softwareData);
 		dialog.show();
 	}
 
+	// ************************************************************************
+	// Settings
+	// ************************************************************************
+	private void clearSettings() {
+		final Preferences prefs = Preferences.userNodeForPackage(this.getClass()).node("window");
+		try {
+			prefs.clear();
+		} catch (final BackingStoreException e) {
+			logger.error(e.getMessage());
+		}
+	}
+
+	private void readSettings() {
+		final Preferences prefs = Preferences.userNodeForPackage(this.getClass()).node("window");
+
+		primaryStage.setX(prefs.getDouble("location_x", 100));
+		primaryStage.setY(prefs.getDouble("location_y", 100));
+		primaryStage.setWidth(prefs.getDouble("width", 1024));
+		primaryStage.setHeight(prefs.getDouble("height", 786));
+		primaryStage.setMaximized(prefs.getBoolean("is_maximized", false));
+	}
+
+	private void writeSettings() {
+		final Preferences prefs = Preferences.userNodeForPackage(this.getClass()).node("window");
+
+		prefs.putBoolean("is_maximized", primaryStage.isMaximized());
+
+		final boolean wasMaximized = primaryStage.isMaximized();
+		primaryStage.setMaximized(false);
+
+		prefs.putDouble("location_x", primaryStage.getX());
+		prefs.putDouble("location_y", primaryStage.getY());
+		prefs.putDouble("width", primaryStage.getWidth());
+		prefs.putDouble("height", primaryStage.getHeight());
+
+		primaryStage.setMaximized(wasMaximized);
+	}
 }
