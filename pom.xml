@@ -28,11 +28,25 @@
 		<!-- Remark: -->
 		<!-- Visit Maven Central to find the latest versions -->
 		<!-- https://search.maven.org/classic/#search -->
+		<slf4j.version>1.7.25</slf4j.version>
 		<afterburner.version>1.7.0</afterburner.version>
 		<commons.io.version>2.6</commons.io.version>
 	</properties>
 
 	<dependencies>
+
+		<!-- Simple Logging Facade for Java (SLF4J) -->
+		<!-- The Simple facade or abstraction for various logging frameworks -->
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>${slf4j.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-log4j12</artifactId>
+			<version>${slf4j.version}</version>
+		</dependency>
 
 		<!-- Afterburner.fx -->
 		<!-- The Opinionated JavaFX Productivity Igniter -->
