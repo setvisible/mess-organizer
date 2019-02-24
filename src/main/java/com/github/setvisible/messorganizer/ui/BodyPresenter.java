@@ -1,18 +1,24 @@
 package com.github.setvisible.messorganizer.ui;
 
+import java.io.File;
+import java.net.URL;
+import java.util.ResourceBundle;
+
 import com.github.setvisible.messorganizer.MainApplication;
 import com.github.setvisible.messorganizer.core.Software;
 
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Alert.AlertType;
+import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.stage.DirectoryChooser;
+import javafx.stage.Stage;
 
-public class SoftwareOverviewController {
+
+public class BodyPresenter implements Initializable {
 
 	private MainApplication mainApp;
 
@@ -30,17 +36,15 @@ public class SoftwareOverviewController {
 	private TextField targetDirectory;
 	@FXML
 	private TextField sourceDirectory;
+
 	@FXML
 	private TextField actionLabel;
 	@FXML
 	private Label sourceNameLabel;
 
+	@Override
+	public void initialize(final URL url, final ResourceBundle resourceBundle) {
 
-	public SoftwareOverviewController() {
-	}
-
-	@FXML
-	private void initialize() {
 		// Initialize the software table with the two columns.
 		softwareNameColumn.setCellValueFactory(cellData -> cellData.getValue().firstSoftwareProperty());
 		vendorNameColumn.setCellValueFactory(cellData -> cellData.getValue().vendorNameProperty());
@@ -60,11 +64,10 @@ public class SoftwareOverviewController {
 	}
 
 	/**
-	 * Fills all text fields to show details about the software. If the
-	 * specified software is null, all text fields are cleared.
+	 * Fills all text fields to show details about the software. If the specified
+	 * software is null, all text fields are cleared.
 	 *
-	 * @param software
-	 *            the software or null
+	 * @param software the software or null
 	 */
 	private void showSoftwareDetails(Software software) {
 		if (software != null) {
@@ -78,9 +81,32 @@ public class SoftwareOverviewController {
 
 	@FXML
 	private void handleBrowseSource() {
+		handleBrowse(sourceDirectory);
 	}
 
 	@FXML
 	private void handleBrowseTarget() {
+		handleBrowse(targetDirectory);
+	}
+
+	private void handleBrowse(TextField textfield) {
+		Stage ownerWindow = mainApp.getPrimaryStage();
+
+		String dir = textfield.getText();
+		File previous = new File(dir);
+		final DirectoryChooser directoryChooser = new DirectoryChooser();
+		if (previous.exists()) {
+			directoryChooser.setInitialDirectory(previous);
+		} else {
+			String path = System.getProperty("user.home");
+			File customDir = new File(path);
+			directoryChooser.setInitialDirectory(customDir);
+		}
+		directoryChooser.setTitle("Select Directory");
+
+		final File selectedDirectory = directoryChooser.showDialog(ownerWindow);
+		if (selectedDirectory != null) {
+			textfield.setText(selectedDirectory.getAbsolutePath());
+		}
 	}
 }

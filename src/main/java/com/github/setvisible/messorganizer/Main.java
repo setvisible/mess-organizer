@@ -1,17 +1,12 @@
 package com.github.setvisible.messorganizer;
 
 import javafx.application.Application;
-import javafx.stage.Stage;
 
-public class Main extends Application {
+public final class Main {
 
-	@Override
-	public void start(Stage primaryStage) {
-		MainApplication app = new MainApplication();
-		app.start(primaryStage);
-	}
 
-	public static void main(String[] args) {
-		launch(args);
+	public static void main(final String[] args) {
+
+		Application.launch(MainApplication.class, args);
 	}
 }

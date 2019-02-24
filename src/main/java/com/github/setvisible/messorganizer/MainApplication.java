@@ -1,7 +1,6 @@
 package com.github.setvisible.messorganizer;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.prefs.Preferences;
 
 import javax.xml.bind.JAXBContext;
@@ -10,26 +9,22 @@ import javax.xml.bind.Unmarshaller;
 
 import com.github.setvisible.messorganizer.core.Software;
 import com.github.setvisible.messorganizer.core.SoftwareListWrapper;
-import com.github.setvisible.messorganizer.ui.RootLayoutController;
-import com.github.setvisible.messorganizer.ui.SoftwareOverviewController;
-import com.github.setvisible.messorganizer.ui.VersionDateStatisticsController;
+import com.github.setvisible.messorganizer.ui.MainWindowPresenter;
+import com.github.setvisible.messorganizer.ui.MainWindowView;
+import com.github.setvisible.messorganizer.ui.dialog.StatisticsDialog;
 
+import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.image.Image;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.BorderPane;
-import javafx.stage.Modality;
 import javafx.stage.Stage;
 
-public class MainApplication {
+public class MainApplication extends Application {
 
 	private Stage primaryStage;
-	private BorderPane rootLayout;
 
 	/**
 	 * The data as an observable list of Software.
@@ -52,69 +47,37 @@ public class MainApplication {
 		softwareData.add(new Software("Martin", "Mueller"));
 	}
 
-	public void start(Stage primaryStage) {
-		this.primaryStage = primaryStage;
-		this.primaryStage.setTitle("Mess Organizer");
+	@Override
+	public void start(Stage stage) {
+
+		final MainWindowView appView = new MainWindowView();
+
+		final Scene scene = new Scene(appView.getView());
+		stage.setTitle("Mess Organizer");
 
 		// Set the application icon.
-		this.primaryStage.getIcons().add(new Image("images/icon_32x32.png"));
+		stage.getIcons().add(new Image("images/icon_32x32.png"));
 
-		initRootLayout();
+		// Set the application style.
+		final String uri = getClass().getResource("/DarkTheme.css").toExternalForm();
+		scene.getStylesheets().add(uri);
 
-		showSoftwareOverview();
-	}
+		stage.setScene(scene);
+		stage.show();
 
-	/**
-	 * Initializes the root layout.
-	 */
-	public void initRootLayout() {
-		try {
-			// Load root layout from fxml file.
-			FXMLLoader loader = new FXMLLoader();
-			loader.setLocation(MainApplication.class.getResource("ui/RootLayout.fxml"));
-			rootLayout = (BorderPane) loader.load();
+		this.primaryStage = stage;
 
-			// Show the scene containing the root layout.
-			Scene scene = new Scene(rootLayout);
-			primaryStage.setScene(scene);
-
-			// Give the controller access to the main app.
-			RootLayoutController controller = loader.getController();
-			controller.setMainApp(this);
-
-			primaryStage.show();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		final MainWindowPresenter mainWindow = (MainWindowPresenter) appView.getPresenter();
+		mainWindow.setMainApp(this);
 
 		// Try to load last opened software file.
-		File file = getSoftwareFilePath();
+		final File file = getSoftwareFilePath();
 		if (file != null) {
 			loadSoftwareDataFromFile(file);
 		}
 	}
 
-	/**
-	 * Shows the software overview inside the root layout.
-	 */
-	public void showSoftwareOverview() {
-		try {
-			// Load software overview.
-			FXMLLoader loader = new FXMLLoader();
-			loader.setLocation(MainApplication.class.getResource("ui/SoftwareOverview.fxml"));
-			AnchorPane softwareOverview = (AnchorPane) loader.load();
 
-			// Set software overview into the center of root layout.
-			rootLayout.setCenter(softwareOverview);
-
-			// Give the controller access to the main app.
-			SoftwareOverviewController controller = loader.getController();
-			controller.setMainApp(this);
-
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
 
 	/**
 	 * Returns the main stage.
@@ -233,31 +196,10 @@ public class MainApplication {
 		}
 	}
 
-	/**
-	 * Opens a dialog to show birthday statistics.
-	 */
 	public void showStatistics() {
-		try {
-			// Load the fxml file and create a new stage for the popup.
-			FXMLLoader loader = new FXMLLoader();
-			loader.setLocation(MainApplication.class.getResource("ui/VersionDateStatistics.fxml"));
-			AnchorPane page = (AnchorPane) loader.load();
-			Stage dialogStage = new Stage();
-			dialogStage.setTitle("Version Date Statistics");
-			dialogStage.initModality(Modality.WINDOW_MODAL);
-			dialogStage.initOwner(primaryStage);
-			Scene scene = new Scene(page);
-			dialogStage.setScene(scene);
-
-			// Set the softwares into the controller.
-			VersionDateStatisticsController controller = loader.getController();
-			controller.setSoftwareData(softwareData);
-
-			dialogStage.show();
-
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		final StatisticsDialog dialog = new StatisticsDialog(primaryStage);
+		dialog.setSoftwareData(softwareData);
+		dialog.show();
 	}
 
 }
