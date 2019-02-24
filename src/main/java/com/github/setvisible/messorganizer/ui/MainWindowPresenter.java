@@ -31,15 +31,18 @@ public class MainWindowPresenter implements Initializable {
 
 	}
 
-	public void setMainApp(MainApplication mainApp) {
+	// ****************************************************************************
+	public void setMainApp(final MainApplication mainApp) {
 		this.mainApp = mainApp;
-		bodyController.setMainApp(mainApp);
+		this.bodyController.setMainApp(mainApp);
 	}
 
 	public void setUserPreference(final UserPreference userPreference) {
 		this.userPreference = userPreference;
 		this.bodyController.setUserPreference(userPreference);
 	}
+
+	// ****************************************************************************
 	@FXML
 	private void handleNew() {
 		mainApp.getSoftwareData().clear();
@@ -48,14 +51,14 @@ public class MainWindowPresenter implements Initializable {
 
 	@FXML
 	private void handleOpen() {
-		FileChooser fileChooser = new FileChooser();
+		final FileChooser fileChooser = new FileChooser();
 
 		// Set extension filter
-		FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("XML files (*.xml)", "*.xml");
+		final FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("XML files (*.xml)", "*.xml");
 		fileChooser.getExtensionFilters().add(extFilter);
 
 		// Show save file dialog
-		File file = fileChooser.showOpenDialog(mainApp.getPrimaryStage());
+		final File file = fileChooser.showOpenDialog(mainApp.getPrimaryStage());
 
 		if (file != null) {
 			mainApp.loadSoftwareDataFromFile(file);
@@ -64,7 +67,7 @@ public class MainWindowPresenter implements Initializable {
 
 	@FXML
 	private void handleSave() {
-		File softwareFile = mainApp.getSoftwareFilePath();
+		final File softwareFile = mainApp.getSoftwareFilePath();
 		if (softwareFile != null) {
 			mainApp.saveSoftwareDataToFile(softwareFile);
 		} else {
@@ -74,10 +77,10 @@ public class MainWindowPresenter implements Initializable {
 
 	@FXML
 	private void handleSaveAs() {
-		FileChooser fileChooser = new FileChooser();
+		final FileChooser fileChooser = new FileChooser();
 
 		// Set extension filter
-		FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("XML files (*.xml)", "*.xml");
+		final FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("XML files (*.xml)", "*.xml");
 		fileChooser.getExtensionFilters().add(extFilter);
 
 		// Show save file dialog
