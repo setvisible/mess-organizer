@@ -1,6 +1,5 @@
 package com.github.setvisible.messorganizer.ui;
 
-import java.io.File;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -16,12 +15,9 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
-import javafx.stage.DirectoryChooser;
-import javafx.stage.Stage;
 
 public class BodyPresenter implements UserPreferenceListener, Initializable {
 
-	private MainApplication mainApp;
 	private UserPreference userPreference;
 
 	@FXML
@@ -62,7 +58,6 @@ public class BodyPresenter implements UserPreferenceListener, Initializable {
 	}
 
 	public void setMainApp(final MainApplication mainApp) {
-		this.mainApp = mainApp;
 		softwareTable.setItems(mainApp.getSoftwareData());
 	}
 
@@ -79,37 +74,6 @@ public class BodyPresenter implements UserPreferenceListener, Initializable {
 		} else {
 			// Person is null, remove all the text.
 			actionLabel.setText("");
-		}
-	}
-
-	@FXML
-	private void handleBrowseSource() {
-		handleBrowse(sourceDirectory);
-	}
-
-	@FXML
-	private void handleBrowseTarget() {
-		handleBrowse(targetDirectory);
-	}
-
-	private void handleBrowse(TextField textfield) {
-		Stage ownerWindow = mainApp.getPrimaryStage();
-
-		String dir = textfield.getText();
-		File previous = new File(dir);
-		final DirectoryChooser directoryChooser = new DirectoryChooser();
-		if (previous.exists()) {
-			directoryChooser.setInitialDirectory(previous);
-		} else {
-			String path = System.getProperty("user.home");
-			File customDir = new File(path);
-			directoryChooser.setInitialDirectory(customDir);
-		}
-		directoryChooser.setTitle("Select Directory");
-
-		final File selectedDirectory = directoryChooser.showDialog(ownerWindow);
-		if (selectedDirectory != null) {
-			textfield.setText(selectedDirectory.getAbsolutePath());
 		}
 	}
 
