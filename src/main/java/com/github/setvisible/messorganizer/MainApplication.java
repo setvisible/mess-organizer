@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 
 import com.github.setvisible.messorganizer.core.Software;
 import com.github.setvisible.messorganizer.core.SoftwareListWrapper;
+import com.github.setvisible.messorganizer.settings.UserPreference;
 import com.github.setvisible.messorganizer.ui.MainWindowPresenter;
 import com.github.setvisible.messorganizer.ui.MainWindowView;
 import com.github.setvisible.messorganizer.ui.dialog.StatisticsDialog;
@@ -28,6 +29,8 @@ import javafx.stage.Stage;
 public class MainApplication extends Application {
 
 	private final Logger logger = LoggerFactory.getLogger(MainApplication.class);
+
+	private final UserPreference userPreference = new UserPreference();
 
 	private Stage primaryStage;
 
@@ -54,6 +57,16 @@ public class MainApplication extends Application {
 
 	@Override
 	public void start(Stage stage) {
+		this.primaryStage = stage;
+
+		primaryStage.setOnCloseRequest(event -> {
+			event.consume();
+			this.exit();
+		});
+		primaryStage.setOnShowing(event -> {
+			this.userPreference.readUserPreference();
+			this.readSettings();
+		});
 
 		final MainWindowView appView = new MainWindowView();
 
@@ -74,6 +87,7 @@ public class MainApplication extends Application {
 
 		final MainWindowPresenter mainWindow = (MainWindowPresenter) appView.getPresenter();
 		mainWindow.setMainApp(this);
+		mainWindow.setUserPreference(userPreference);
 
 		// Try to load last opened software file.
 		final File file = getSoftwareFilePath();

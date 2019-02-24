@@ -5,6 +5,8 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 import com.github.setvisible.messorganizer.MainApplication;
+import com.github.setvisible.messorganizer.settings.UserPreference;
+import com.github.setvisible.messorganizer.ui.dialog.PreferenceDialog;
 
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -18,13 +20,14 @@ import javafx.stage.FileChooser;
 public class MainWindowPresenter implements Initializable {
 
 	private MainApplication mainApp;
+	private UserPreference userPreference;
 
 	@FXML
 	private BodyPresenter bodyController;
 
+
 	@Override
 	public void initialize(final URL url, final ResourceBundle resourceBundle) {
-
 
 	}
 
@@ -33,6 +36,10 @@ public class MainWindowPresenter implements Initializable {
 		bodyController.setMainApp(mainApp);
 	}
 
+	public void setUserPreference(final UserPreference userPreference) {
+		this.userPreference = userPreference;
+		this.bodyController.setUserPreference(userPreference);
+	}
 	@FXML
 	private void handleNew() {
 		mainApp.getSoftwareData().clear();
@@ -103,8 +110,17 @@ public class MainWindowPresenter implements Initializable {
 		System.exit(0);
 	}
 
+	// ****************************************************************************
 	@FXML
 	private void handleShowStatistics() {
 		mainApp.showStatistics();
+	}
+
+	@FXML
+	public void showUserPreferences() {
+		final Stage primaryStage = mainApp.getPrimaryStage();
+		final PreferenceDialog dialog = new PreferenceDialog(primaryStage);
+		dialog.setUserPreference(userPreference);
+		dialog.show();
 	}
 }

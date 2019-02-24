@@ -6,6 +6,8 @@ import java.util.ResourceBundle;
 
 import com.github.setvisible.messorganizer.MainApplication;
 import com.github.setvisible.messorganizer.core.Software;
+import com.github.setvisible.messorganizer.settings.UserPreference;
+import com.github.setvisible.messorganizer.settings.UserPreferenceListener;
 
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -17,10 +19,10 @@ import javafx.scene.control.TextField;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
 
-
-public class BodyPresenter implements Initializable {
+public class BodyPresenter implements UserPreferenceListener, Initializable {
 
 	private MainApplication mainApp;
+	private UserPreference userPreference;
 
 	@FXML
 	private TableView<Software> softwareTable;
@@ -56,9 +58,10 @@ public class BodyPresenter implements Initializable {
 		// changed.
 		softwareTable.getSelectionModel().selectedItemProperty()
 				.addListener((observable, oldValue, newValue) -> showSoftwareDetails(newValue));
+
 	}
 
-	public void setMainApp(MainApplication mainApp) {
+	public void setMainApp(final MainApplication mainApp) {
 		this.mainApp = mainApp;
 		softwareTable.setItems(mainApp.getSoftwareData());
 	}
@@ -69,7 +72,7 @@ public class BodyPresenter implements Initializable {
 	 *
 	 * @param software the software or null
 	 */
-	private void showSoftwareDetails(Software software) {
+	private void showSoftwareDetails(final Software software) {
 		if (software != null) {
 			// Fill the labels with info from the software object.
 			actionLabel.setText(software.getSoftwareName());
@@ -108,5 +111,35 @@ public class BodyPresenter implements Initializable {
 		if (selectedDirectory != null) {
 			textfield.setText(selectedDirectory.getAbsolutePath());
 		}
+	}
+
+	// ************************************************************************
+	// User Preference
+	// ************************************************************************
+	public void setUserPreference(final UserPreference userPreference) {
+		if (this.userPreference != null) {
+			this.userPreference.removeListener(this);
+		}
+		this.userPreference = userPreference;
+		if (this.userPreference != null) {
+			this.userPreference.addListener(this);
+
+			onSourceDirectoryChanged();
+			onTargetDirectoryChanged();
+		}
+	}
+
+	@Override
+	public void onSourceDirectoryChanged() {
+		assert userPreference != null;
+		final String directory = this.userPreference.getSourceDirectory();
+		sourceDirectory.setText(directory);
+	}
+
+	@Override
+	public void onTargetDirectoryChanged() {
+		assert userPreference != null;
+		final String directory = this.userPreference.getTargetDirectory();
+		targetDirectory.setText(directory);
 	}
 }
