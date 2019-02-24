@@ -4,6 +4,9 @@ import java.io.IOException;
 import java.util.List;
 import java.util.ResourceBundle;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.github.setvisible.messorganizer.core.Software;
 
 import javafx.fxml.FXMLLoader;
@@ -19,6 +22,8 @@ import javafx.stage.Stage;
  *
  */
 public class StatisticsDialog extends Dialog<ButtonType> {
+
+	private final Logger logger = LoggerFactory.getLogger(StatisticsDialog.class);
 
 	private StatisticsDialogController controller;
 
@@ -46,6 +51,7 @@ public class StatisticsDialog extends Dialog<ButtonType> {
 			buttonOk.setText(loader.getResources().getString("close"));
 
 		} catch (final IOException e) {
+			logger.error(e.getMessage());
 		}
 
 	}
