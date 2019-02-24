@@ -12,7 +12,10 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.ButtonType;
 import javafx.stage.FileChooser;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 
 /**
  * Main view of the application.
@@ -97,15 +100,18 @@ public class MainWindowPresenter implements Initializable {
 
 	@FXML
 	private void handleAbout() {
+		final Stage primaryStage = mainApp.getPrimaryStage();
 		final Alert alert = new Alert(AlertType.INFORMATION);
-		alert.setTitle("Mess Organizer");
-		alert.setHeaderText(ResourceBundle.getBundle("locale.en_US").getString("about"));
-		final String content = ResourceBundle.getBundle("locale.en_US").getString("about.author") //
+		alert.setTitle(ResourceBundle.getBundle("locale.en_US").getString("about"));
+		alert.setHeaderText("Mess Organizer");
+		alert.setContentText(ResourceBundle.getBundle("locale.en_US").getString("about.author") //
 				+ ":\t Sebastien Vavassori" + "\n\n" //
 				+ ResourceBundle.getBundle("locale.en_US").getString("about.website") //
-				+ ":\t https://github.com/setvisible";
-		alert.setContentText(content);
-		alert.showAndWait();
+				+ ":\t https://github.com/setvisible");
+		alert.initModality(Modality.APPLICATION_MODAL);
+		alert.initOwner(primaryStage);
+		alert.getButtonTypes().setAll(ButtonType.OK);
+		alert.show();
 	}
 
 	@FXML
