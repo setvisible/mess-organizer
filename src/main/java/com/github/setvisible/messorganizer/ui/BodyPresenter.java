@@ -44,8 +44,8 @@ public class BodyPresenter implements UserPreferenceListener, Initializable {
 	public void initialize(final URL url, final ResourceBundle resourceBundle) {
 
 		// Initialize the software table with the two columns.
-		softwareNameColumn.setCellValueFactory(cellData -> cellData.getValue().firstSoftwareProperty());
-		vendorNameColumn.setCellValueFactory(cellData -> cellData.getValue().vendorNameProperty());
+		softwareNameColumn.setCellValueFactory(cellData -> cellData.getValue().fileNameProperty());
+		vendorNameColumn.setCellValueFactory(cellData -> cellData.getValue().fullFileNameProperty());
 
 		// Clear software details.
 		showSoftwareDetails(null);
@@ -68,7 +68,7 @@ public class BodyPresenter implements UserPreferenceListener, Initializable {
 	private void showSoftwareDetails(final Software software) {
 		if (software != null) {
 			// Fill the labels with info from the software object.
-			actionLabel.setText(software.getSoftwareName());
+			actionLabel.setText(software.getFileName());
 		} else {
 			// Person is null, remove all the text.
 			actionLabel.setText("");

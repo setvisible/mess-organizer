@@ -6,7 +6,9 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import com.github.setvisible.messorganizer.util.LocalDateAdapter;
 
+import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
@@ -16,60 +18,75 @@ import javafx.beans.property.StringProperty;
  *
  */
 public class Software {
-	private static final String SimpleObjectProperty = null;
-	private final StringProperty softwareName;
-	private final StringProperty vendorName;
-	private final ObjectProperty<LocalDate> versionDate;
 
-	/**
-	 * Default constructor.
-	 */
+	private final StringProperty fileName = new SimpleStringProperty();
+	private final StringProperty fullFileName = new SimpleStringProperty();
+	private final StringProperty destinationPathName = new SimpleStringProperty();
+	private final DoubleProperty similarity = new SimpleDoubleProperty();
+	private final ObjectProperty<LocalDate> versionDate = new SimpleObjectProperty<LocalDate>();
+
 	public Software() {
-		this(null, null);
 	}
 
-	/**
-	 * Constructor with some initial data.
-	 * 
-	 * @param softwareName
-	 * @param vendorName
-	 */
-	public Software(String softwareName, String vendorName) {
-		this.softwareName = new SimpleStringProperty(softwareName);
-		this.vendorName = new SimpleStringProperty(vendorName);
-		this.versionDate = new SimpleObjectProperty<LocalDate>(LocalDate.of(1999, 2, 21));
+	// ****************************************************************************
+	public String getFileName() {
+		return fileName.get();
 	}
 
-	public String getSoftwareName() {
-		return softwareName.get();
+	public void setFileName(final String fileName) {
+		this.fileName.set(fileName);
 	}
 
-	public void setSoftwareName(String softwareName) {
-		this.softwareName.set(softwareName);
+	public StringProperty fileNameProperty() {
+		return fileName;
 	}
 
-	public StringProperty firstSoftwareProperty() {
-		return softwareName;
+	// ****************************************************************************
+	public String getFullFileName() {
+		return fullFileName.get();
 	}
 
-	public String getVendorName() {
-		return vendorName.get();
+	public void setFullFileName(final String fullFileName) {
+		this.fullFileName.set(fullFileName);
 	}
 
-	public void setVendorName(String vendorName) {
-		this.vendorName.set(vendorName);
+	public StringProperty fullFileNameProperty() {
+		return fullFileName;
 	}
 
-	public StringProperty vendorNameProperty() {
-		return vendorName;
+	// ****************************************************************************
+	public String getDestinationPathName() {
+		return destinationPathName.get();
 	}
 
+	public void setDestinationPathName(final String destinationPathName) {
+		this.destinationPathName.set(destinationPathName);
+	}
+
+	public StringProperty destinationPathNameProperty() {
+		return destinationPathName;
+	}
+
+	// ****************************************************************************
+	public Double getSimilarity() {
+		return similarity.get();
+	}
+
+	public void setSimilarity(final double similarity) {
+		this.similarity.set(similarity);
+	}
+
+	public DoubleProperty similarityProperty() {
+		return similarity;
+	}
+
+	// ****************************************************************************
 	@XmlJavaTypeAdapter(LocalDateAdapter.class)
 	public LocalDate getVersionDate() {
 		return versionDate.get();
 	}
 
-	public void setVersionDate(LocalDate versionDate) {
+	public void setVersionDate(final LocalDate versionDate) {
 		this.versionDate.set(versionDate);
 	}
 
