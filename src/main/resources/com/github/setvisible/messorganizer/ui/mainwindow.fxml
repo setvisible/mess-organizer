@@ -12,12 +12,12 @@
 			<menus>
 				<Menu mnemonicParsing="false" text="%file">
 					<items>
-						<MenuItem mnemonicParsing="false" onAction="#handleNew" text="New" />
-						<MenuItem mnemonicParsing="false" onAction="#handleOpen" text="Open..." />
-						<MenuItem mnemonicParsing="false" onAction="#handleSave" text="Save" />
-						<MenuItem mnemonicParsing="false" onAction="#handleSaveAs" text="Save As..." />
+						<MenuItem mnemonicParsing="false" onAction="#newFile" text="New" />
+						<MenuItem mnemonicParsing="false" onAction="#open" text="Open..." />
+						<MenuItem mnemonicParsing="false" onAction="#save" text="Save" />
+						<MenuItem mnemonicParsing="false" onAction="#saveAs" text="Save As..." />
 						<SeparatorMenuItem mnemonicParsing="false" />
-						<MenuItem mnemonicParsing="false" onAction="#handleExit" text="Exit" />
+						<MenuItem mnemonicParsing="false" onAction="#exit" text="Exit" />
 					</items>
 				</Menu>
 				<Menu mnemonicParsing="false" text="Edit">
@@ -29,12 +29,12 @@
 				</Menu>
 				<Menu mnemonicParsing="false" text="Statistics">
 					<items>
-						<MenuItem mnemonicParsing="false" onAction="#handleShowStatistics" text="Show Statistics..." />
+						<MenuItem mnemonicParsing="false" onAction="#showStatistics" text="Show Statistics..." />
 					</items>
 				</Menu>
 				<Menu mnemonicParsing="false" text="Help">
 					<items>
-						<MenuItem mnemonicParsing="false" onAction="#handleAbout" text="About" />
+						<MenuItem mnemonicParsing="false" onAction="#about" text="About" />
 					</items>
 				</Menu>
 			</menus>
