@@ -28,6 +28,7 @@ public class StatisticsDialog extends Dialog<ButtonType> {
 	private StatisticsDialogController controller;
 
 	public StatisticsDialog(final Stage stage) {
+		assert stage != null;
 
 		try {
 			/* Load the FXML Scene */

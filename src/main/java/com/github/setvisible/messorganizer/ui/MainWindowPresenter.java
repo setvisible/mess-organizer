@@ -5,12 +5,17 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 import com.github.setvisible.messorganizer.MainApplication;
+import com.github.setvisible.messorganizer.settings.UserPreference;
+import com.github.setvisible.messorganizer.ui.dialog.PreferenceDialog;
 
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.ButtonType;
 import javafx.stage.FileChooser;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 
 /**
  * Main view of the application.
@@ -18,21 +23,29 @@ import javafx.stage.FileChooser;
 public class MainWindowPresenter implements Initializable {
 
 	private MainApplication mainApp;
+	private UserPreference userPreference;
 
 	@FXML
 	private BodyPresenter bodyController;
 
+
 	@Override
 	public void initialize(final URL url, final ResourceBundle resourceBundle) {
 
-
 	}
 
-	public void setMainApp(MainApplication mainApp) {
+	// ****************************************************************************
+	public void setMainApp(final MainApplication mainApp) {
 		this.mainApp = mainApp;
-		bodyController.setMainApp(mainApp);
+		this.bodyController.setMainApp(mainApp);
 	}
 
+	public void setUserPreference(final UserPreference userPreference) {
+		this.userPreference = userPreference;
+		this.bodyController.setUserPreference(userPreference);
+	}
+
+	// ****************************************************************************
 	@FXML
 	private void handleNew() {
 		mainApp.getSoftwareData().clear();
@@ -41,14 +54,14 @@ public class MainWindowPresenter implements Initializable {
 
 	@FXML
 	private void handleOpen() {
-		FileChooser fileChooser = new FileChooser();
+		final FileChooser fileChooser = new FileChooser();
 
 		// Set extension filter
-		FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("XML files (*.xml)", "*.xml");
+		final FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("XML files (*.xml)", "*.xml");
 		fileChooser.getExtensionFilters().add(extFilter);
 
 		// Show save file dialog
-		File file = fileChooser.showOpenDialog(mainApp.getPrimaryStage());
+		final File file = fileChooser.showOpenDialog(mainApp.getPrimaryStage());
 
 		if (file != null) {
 			mainApp.loadSoftwareDataFromFile(file);
@@ -57,7 +70,7 @@ public class MainWindowPresenter implements Initializable {
 
 	@FXML
 	private void handleSave() {
-		File softwareFile = mainApp.getSoftwareFilePath();
+		final File softwareFile = mainApp.getSoftwareFilePath();
 		if (softwareFile != null) {
 			mainApp.saveSoftwareDataToFile(softwareFile);
 		} else {
@@ -67,10 +80,10 @@ public class MainWindowPresenter implements Initializable {
 
 	@FXML
 	private void handleSaveAs() {
-		FileChooser fileChooser = new FileChooser();
+		final FileChooser fileChooser = new FileChooser();
 
 		// Set extension filter
-		FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("XML files (*.xml)", "*.xml");
+		final FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("XML files (*.xml)", "*.xml");
 		fileChooser.getExtensionFilters().add(extFilter);
 
 		// Show save file dialog
@@ -87,24 +100,36 @@ public class MainWindowPresenter implements Initializable {
 
 	@FXML
 	private void handleAbout() {
+		final Stage primaryStage = mainApp.getPrimaryStage();
 		final Alert alert = new Alert(AlertType.INFORMATION);
-		alert.setTitle("Mess Organizer");
-		alert.setHeaderText(ResourceBundle.getBundle("locale.en_US").getString("about"));
-		final String content = ResourceBundle.getBundle("locale.en_US").getString("about.author") //
+		alert.setTitle(ResourceBundle.getBundle("locale.en_US").getString("about"));
+		alert.setHeaderText("Mess Organizer");
+		alert.setContentText(ResourceBundle.getBundle("locale.en_US").getString("about.author") //
 				+ ":\t Sebastien Vavassori" + "\n\n" //
 				+ ResourceBundle.getBundle("locale.en_US").getString("about.website") //
-				+ ":\t https://github.com/setvisible";
-		alert.setContentText(content);
-		alert.showAndWait();
+				+ ":\t https://github.com/setvisible");
+		alert.initModality(Modality.APPLICATION_MODAL);
+		alert.initOwner(primaryStage);
+		alert.getButtonTypes().setAll(ButtonType.OK);
+		alert.show();
 	}
 
 	@FXML
 	private void handleExit() {
-		System.exit(0);
+		mainApp.exit();
 	}
 
+	// ****************************************************************************
 	@FXML
 	private void handleShowStatistics() {
 		mainApp.showStatistics();
+	}
+
+	@FXML
+	public void showUserPreferences() {
+		final Stage primaryStage = mainApp.getPrimaryStage();
+		final PreferenceDialog dialog = new PreferenceDialog(primaryStage);
+		dialog.setUserPreference(userPreference);
+		dialog.show();
 	}
 }
