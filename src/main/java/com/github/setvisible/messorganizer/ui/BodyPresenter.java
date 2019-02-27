@@ -2,8 +2,8 @@ package com.github.setvisible.messorganizer.ui;
 
 import java.net.URL;
 import java.util.ResourceBundle;
+import java.util.function.Consumer;
 
-import com.github.setvisible.messorganizer.MainApplication;
 import com.github.setvisible.messorganizer.core.Software;
 import com.github.setvisible.messorganizer.settings.UserPreference;
 import com.github.setvisible.messorganizer.settings.UserPreferenceListener;
@@ -57,8 +57,6 @@ public class BodyPresenter implements UserPreferenceListener, Initializable {
 
 	}
 
-	public void setMainApp(final MainApplication mainApp) {
-		softwareTable.setItems(mainApp.getSoftwareData());
 	}
 
 	/**
@@ -75,6 +73,29 @@ public class BodyPresenter implements UserPreferenceListener, Initializable {
 			// Person is null, remove all the text.
 			actionLabel.setText("");
 		}
+	}
+
+	// ************************************************************************
+	// Actions
+	// ************************************************************************
+	private Consumer<?> callbackShowUserPreferences;
+
+	public void setOnShowUserPreferences(Consumer<?> callbackShowUserPreferences) {
+		this.callbackShowUserPreferences = callbackShowUserPreferences;
+	}
+
+	@FXML
+	public void showUserPreferences() {
+		callbackShowUserPreferences.accept(null);
+	}
+
+	// ************************************************************************
+	// Model Listeners
+	// ************************************************************************
+	@Override
+	public void onDataChanged() {
+		softwareTable.getItems().clear();
+		softwareTable.setItems(this.model.getSoftwareData());
 	}
 
 	// ************************************************************************

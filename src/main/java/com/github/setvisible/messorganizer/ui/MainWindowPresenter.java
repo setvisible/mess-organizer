@@ -1,135 +1,121 @@
 package com.github.setvisible.messorganizer.ui;
 
-import java.io.File;
 import java.net.URL;
 import java.util.ResourceBundle;
+import java.util.function.Consumer;
 
-import com.github.setvisible.messorganizer.MainApplication;
 import com.github.setvisible.messorganizer.settings.UserPreference;
-import com.github.setvisible.messorganizer.ui.dialog.PreferenceDialog;
 
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Alert.AlertType;
-import javafx.scene.control.ButtonType;
-import javafx.stage.FileChooser;
-import javafx.stage.Modality;
-import javafx.stage.Stage;
 
 /**
  * Main view of the application.
  */
 public class MainWindowPresenter implements Initializable {
 
-	private MainApplication mainApp;
-	private UserPreference userPreference;
+	private Model model;
 
 	@FXML
 	private BodyPresenter bodyController;
 
-
 	@Override
 	public void initialize(final URL url, final ResourceBundle resourceBundle) {
+	}
 
 	}
 
-	// ****************************************************************************
-	public void setMainApp(final MainApplication mainApp) {
-		this.mainApp = mainApp;
-		this.bodyController.setMainApp(mainApp);
-	}
-
+	// ***********************************************************************
 	public void setUserPreference(final UserPreference userPreference) {
-		this.userPreference = userPreference;
 		this.bodyController.setUserPreference(userPreference);
 	}
 
-	// ****************************************************************************
+	// ************************************************************************
+	// Actions
+	// ************************************************************************
+	private Consumer<?> callbackNewFile;
+	private Consumer<?> callbackOpen;
+	private Consumer<?> callbackSave;
+	private Consumer<?> callbackSaveAs;
+	private Consumer<?> callbackExit;
+	private Consumer<?> callbackShowStatistics;
+	private Consumer<?> callbackShowUserPreferences;
+	private Consumer<?> callbackAbout;
+
+	public void setNewFileAction(Consumer<?> callbackNewFile) {
+		this.callbackNewFile = callbackNewFile;
+	}
+
+	public void setOpenAction(Consumer<?> callbackOpen) {
+		this.callbackOpen = callbackOpen;
+	}
+
+	public void setSaveAction(Consumer<?> callbackSave) {
+		this.callbackSave = callbackSave;
+	}
+
+	public void setSaveAsAction(Consumer<?> callbackSaveAs) {
+		this.callbackSaveAs = callbackSaveAs;
+	}
+
+	public void setExitAction(Consumer<?> callbackExit) {
+		this.callbackExit = callbackExit;
+	}
+
+	public void setOnShowStatisticsAction(Consumer<?> callbackShowStatistics) {
+		this.callbackShowStatistics = callbackShowStatistics;
+	}
+
+	public void setOnShowUserPreferencesAction(Consumer<?> callbackShowUserPreferences) {
+		this.callbackShowUserPreferences = callbackShowUserPreferences;
+		this.bodyController.setOnShowUserPreferences(callbackShowUserPreferences);
+	}
+
+	public void setOnAboutAction(Consumer<?> callbackAbout) {
+		this.callbackAbout = callbackAbout;
+	}
+
+	// ************************************************************************
+	// Events
+	// ************************************************************************
 	@FXML
-	private void handleNew() {
-		mainApp.getSoftwareData().clear();
-		mainApp.setSoftwareFilePath(null);
+	private void newFile() {
+		callbackNewFile.accept(null);
 	}
 
 	@FXML
-	private void handleOpen() {
-		final FileChooser fileChooser = new FileChooser();
-
-		// Set extension filter
-		final FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("XML files (*.xml)", "*.xml");
-		fileChooser.getExtensionFilters().add(extFilter);
-
-		// Show save file dialog
-		final File file = fileChooser.showOpenDialog(mainApp.getPrimaryStage());
-
-		if (file != null) {
-			mainApp.loadSoftwareDataFromFile(file);
-		}
+	private void open() {
+		callbackOpen.accept(null);
 	}
 
 	@FXML
-	private void handleSave() {
-		final File softwareFile = mainApp.getSoftwareFilePath();
-		if (softwareFile != null) {
-			mainApp.saveSoftwareDataToFile(softwareFile);
-		} else {
-			handleSaveAs();
-		}
+	private void save() {
+		callbackSave.accept(null);
 	}
 
 	@FXML
-	private void handleSaveAs() {
-		final FileChooser fileChooser = new FileChooser();
-
-		// Set extension filter
-		final FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("XML files (*.xml)", "*.xml");
-		fileChooser.getExtensionFilters().add(extFilter);
-
-		// Show save file dialog
-		File file = fileChooser.showSaveDialog(mainApp.getPrimaryStage());
-
-		if (file != null) {
-			// Make sure it has the correct extension
-			if (!file.getPath().endsWith(".xml")) {
-				file = new File(file.getPath() + ".xml");
-			}
-			mainApp.saveSoftwareDataToFile(file);
-		}
+	private void saveAs() {
+		callbackSaveAs.accept(null);
 	}
 
 	@FXML
-	private void handleAbout() {
-		final Stage primaryStage = mainApp.getPrimaryStage();
-		final Alert alert = new Alert(AlertType.INFORMATION);
-		alert.setTitle(ResourceBundle.getBundle("locale.en_US").getString("about"));
-		alert.setHeaderText("Mess Organizer");
-		alert.setContentText(ResourceBundle.getBundle("locale.en_US").getString("about.author") //
-				+ ":\t Sebastien Vavassori" + "\n\n" //
-				+ ResourceBundle.getBundle("locale.en_US").getString("about.website") //
-				+ ":\t https://github.com/setvisible");
-		alert.initModality(Modality.APPLICATION_MODAL);
-		alert.initOwner(primaryStage);
-		alert.getButtonTypes().setAll(ButtonType.OK);
-		alert.show();
+	private void exit() {
+		callbackExit.accept(null);
 	}
 
 	@FXML
-	private void handleExit() {
-		mainApp.exit();
-	}
-
-	// ****************************************************************************
-	@FXML
-	private void handleShowStatistics() {
-		mainApp.showStatistics();
+	private void showStatistics() {
+		callbackShowStatistics.accept(null);
 	}
 
 	@FXML
 	public void showUserPreferences() {
-		final Stage primaryStage = mainApp.getPrimaryStage();
-		final PreferenceDialog dialog = new PreferenceDialog(primaryStage);
-		dialog.setUserPreference(userPreference);
-		dialog.show();
+		callbackShowUserPreferences.accept(null);
+	}
+
+	@FXML
+	private void about() {
+		callbackAbout.accept(null);
+	}
 	}
 }
