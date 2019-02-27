@@ -4,6 +4,8 @@ import java.net.URL;
 import java.util.ResourceBundle;
 import java.util.function.Consumer;
 
+import com.github.setvisible.messorganizer.core.Model;
+import com.github.setvisible.messorganizer.core.ModelListener;
 import com.github.setvisible.messorganizer.settings.UserPreference;
 
 import javafx.fxml.FXML;
@@ -12,7 +14,7 @@ import javafx.fxml.Initializable;
 /**
  * Main view of the application.
  */
-public class MainWindowPresenter implements Initializable {
+public class MainWindowPresenter implements ModelListener, Initializable {
 
 	private Model model;
 
@@ -22,6 +24,17 @@ public class MainWindowPresenter implements Initializable {
 	@Override
 	public void initialize(final URL url, final ResourceBundle resourceBundle) {
 	}
+
+	public void setModel(final Model model) {
+		if (this.model != null) {
+			this.model.removeListener(this);
+		}
+		this.model = model;
+		if (this.model != null) {
+			this.model.addListener(this);
+		}
+
+		this.bodyController.setModel(model);
 
 	}
 
@@ -117,5 +130,12 @@ public class MainWindowPresenter implements Initializable {
 	private void about() {
 		callbackAbout.accept(null);
 	}
+
+	// ************************************************************************
+	// Model Listeners
+	// ************************************************************************
+	@Override
+	public void onDataChanged() {
+
 	}
 }

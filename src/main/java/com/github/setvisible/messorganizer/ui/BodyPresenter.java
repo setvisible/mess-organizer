@@ -4,6 +4,8 @@ import java.net.URL;
 import java.util.ResourceBundle;
 import java.util.function.Consumer;
 
+import com.github.setvisible.messorganizer.core.Model;
+import com.github.setvisible.messorganizer.core.ModelListener;
 import com.github.setvisible.messorganizer.core.Software;
 import com.github.setvisible.messorganizer.settings.UserPreference;
 import com.github.setvisible.messorganizer.settings.UserPreferenceListener;
@@ -16,8 +18,9 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 
-public class BodyPresenter implements UserPreferenceListener, Initializable {
+public class BodyPresenter implements ModelListener, UserPreferenceListener, Initializable {
 
+	private Model model;
 	private UserPreference userPreference;
 
 	@FXML
@@ -55,6 +58,19 @@ public class BodyPresenter implements UserPreferenceListener, Initializable {
 		softwareTable.getSelectionModel().selectedItemProperty()
 				.addListener((observable, oldValue, newValue) -> showSoftwareDetails(newValue));
 
+
+	}
+
+	public void setModel(final Model model) {
+		if (this.model != null) {
+			this.model.removeListener(this);
+			softwareTable.getItems().clear();
+		}
+		this.model = model;
+		if (this.model != null) {
+			this.model.addListener(this);
+			softwareTable.setItems(this.model.getSoftwareData());
+		}
 	}
 
 	}
