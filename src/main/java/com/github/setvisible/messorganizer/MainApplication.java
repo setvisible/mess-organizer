@@ -3,6 +3,7 @@ package com.github.setvisible.messorganizer;
 import java.io.File;
 import java.util.Optional;
 import java.util.ResourceBundle;
+import java.util.function.Consumer;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 
@@ -10,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.github.setvisible.messorganizer.core.Model;
+import com.github.setvisible.messorganizer.core.Software;
 import com.github.setvisible.messorganizer.io.Parser;
 import com.github.setvisible.messorganizer.settings.UserPreference;
 import com.github.setvisible.messorganizer.ui.MainWindowPresenter;
@@ -83,6 +85,8 @@ public class MainApplication extends Application {
 		mainWindow.setSaveAsAction(e -> saveAs());
 		mainWindow.setSaveAction(e -> save());
 		mainWindow.setExitAction(e -> exit());
+		mainWindow.setOnApplyAllAction(e -> applyAll());
+		mainWindow.setOnApplyAction(e -> apply(e));
 		mainWindow.setOnShowStatisticsAction(e -> showStatistics());
 		mainWindow.setOnShowUserPreferencesAction(e -> showUserPreferences());
 		mainWindow.setOnAboutAction(e -> about());
@@ -213,6 +217,12 @@ public class MainApplication extends Application {
 	}
 
 	// ************************************************************************
+	private void applyAll() {
+	}
+
+	private void apply(final Software software) {
+	}
+
 	private void showStatistics() {
 		final StatisticsDialog dialog = new StatisticsDialog(primaryStage);
 		dialog.setSoftwareData(model.getSoftwareData());
