@@ -50,7 +50,7 @@ public class MainApplication extends Application {
 	}
 
 	@Override
-	public void start(Stage stage) {
+	public void start(final Stage stage) {
 		this.primaryStage = stage;
 
 		primaryStage.setOnCloseRequest(event -> {
@@ -107,8 +107,8 @@ public class MainApplication extends Application {
 	 * @return
 	 */
 	public File getCurrentFilePath() {
-		Preferences prefs = Preferences.userNodeForPackage(MainApplication.class);
-		String filePath = prefs.get("filePath", null);
+		final Preferences prefs = Preferences.userNodeForPackage(MainApplication.class);
+		final String filePath = prefs.get("filePath", null);
 		if (filePath != null) {
 			return new File(filePath);
 		} else {
@@ -122,8 +122,8 @@ public class MainApplication extends Application {
 	 * 
 	 * @param file the file or null to remove the path
 	 */
-	public void setCurrentFilePath(File file) {
-		Preferences prefs = Preferences.userNodeForPackage(MainApplication.class);
+	public void setCurrentFilePath(final File file) {
+		final Preferences prefs = Preferences.userNodeForPackage(MainApplication.class);
 		if (file != null) {
 			prefs.put("filePath", file.getPath());
 			primaryStage.setTitle("Mess Organizer - " + file.getName());
@@ -148,8 +148,8 @@ public class MainApplication extends Application {
 				Parser.loadDataFromFile(file, model);
 				setCurrentFilePath(file);
 
-			} catch (Exception e) { // catches ANY exception
-				Alert alert = new Alert(AlertType.ERROR);
+			} catch (final Exception e) { // catches ANY exception
+				final Alert alert = new Alert(AlertType.ERROR);
 				alert.setTitle("Error");
 				alert.setHeaderText("Could not load data");
 				alert.setContentText("Could not load data from file:\n" + file.getPath());
@@ -165,8 +165,8 @@ public class MainApplication extends Application {
 			try {
 				Parser.saveDataToFile(file, model);
 
-			} catch (Exception e) { // catches ANY exception
-				Alert alert = new Alert(AlertType.ERROR);
+			} catch (final Exception e) { // catches ANY exception
+				final Alert alert = new Alert(AlertType.ERROR);
 				alert.setTitle("Error");
 				alert.setHeaderText("Could not save data");
 				alert.setContentText("Could not save data to file:\n" + file.getPath());
