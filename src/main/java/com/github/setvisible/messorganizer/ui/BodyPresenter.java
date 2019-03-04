@@ -55,6 +55,34 @@ public class BodyPresenter implements ModelListener, UserPreferenceListener, Ini
 			cell.setOnApplyAction(callbackApply);
 			cell.setOnOpenOptionDialogAction(callbackOpenOptionDialog);
 
+			final ContextMenu contextMenu = new ContextMenu();
+
+			final MenuItem copyItem = new MenuItem();
+			copyItem.textProperty().bind(Bindings.format("Copy \"%s\" details", cell.fileNameProperty()));
+			copyItem.setOnAction(e -> copyDetails(cell.getItem()));
+			contextMenu.getItems().add(copyItem);
+
+			contextMenu.getItems().add(new SeparatorMenuItem());
+
+			final MenuItem openSourcetem = new MenuItem();
+			openSourcetem.setText("Open file directory...");
+			openSourcetem.setOnAction(e -> openSourceDirectory(cell.getItem()));
+			contextMenu.getItems().add(openSourcetem);
+
+			final MenuItem openTargetItem = new MenuItem();
+			openTargetItem.setText("Open destination...");
+			openTargetItem.setOnAction(e -> openTargetDirectory(cell.getItem()));
+			openTargetItem.disableProperty().bind(cell.hasDestinationProperty().not());
+			contextMenu.getItems().add(openTargetItem);
+
+			contextMenu.getItems().add(new SeparatorMenuItem());
+
+			final MenuItem applyItem = new MenuItem();
+			applyItem.setText("Apply");
+			applyItem.setOnAction(e -> apply(cell.getItem()));
+			contextMenu.getItems().add(applyItem);
+
+			cell.setContextMenu(contextMenu);
 			return cell;
 		});
 
@@ -88,6 +116,7 @@ public class BodyPresenter implements ModelListener, UserPreferenceListener, Ini
 	}
 
 	private static void copyDetails(final Software software) {
+		// TODO
 	}
 
 	private static void openSourceDirectory(final Software software) {
