@@ -16,6 +16,7 @@ import com.github.setvisible.messorganizer.io.Parser;
 import com.github.setvisible.messorganizer.settings.UserPreference;
 import com.github.setvisible.messorganizer.ui.MainWindowPresenter;
 import com.github.setvisible.messorganizer.ui.MainWindowView;
+import com.github.setvisible.messorganizer.ui.dialog.OptionDialog;
 import com.github.setvisible.messorganizer.ui.dialog.PreferenceDialog;
 import com.github.setvisible.messorganizer.ui.dialog.StatisticsDialog;
 
@@ -87,6 +88,7 @@ public class MainApplication extends Application {
 		mainWindow.setExitAction(e -> exit());
 		mainWindow.setOnApplyAllAction(e -> applyAll());
 		mainWindow.setOnApplyAction(e -> apply(e));
+		mainWindow.setOnOpenOptionDialogAction(e -> openOptionDialog(e));
 		mainWindow.setOnShowStatisticsAction(e -> showStatistics());
 		mainWindow.setOnShowUserPreferencesAction(e -> showUserPreferences());
 		mainWindow.setOnAboutAction(e -> about());
@@ -221,6 +223,15 @@ public class MainApplication extends Application {
 	}
 
 	private void apply(final Software software) {
+
+	private void openOptionDialog(final Software software) {
+		final OptionDialog dialog = new OptionDialog(primaryStage);
+		dialog.setSoftware(software);
+		final Optional<ButtonType> result = dialog.showAndWait();
+		if (result.isPresent() && result.get() == ButtonType.OK) {
+			software.setDecision(dialog.getDecision());
+			software.setDestinationPathName(dialog.getDestinationPathName());
+		}
 	}
 
 	private void showStatistics() {

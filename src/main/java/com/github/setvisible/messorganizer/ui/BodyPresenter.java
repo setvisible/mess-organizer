@@ -82,6 +82,13 @@ public class BodyPresenter implements ModelListener, UserPreferenceListener, Ini
 			applyItem.setOnAction(e -> apply(cell.getItem()));
 			contextMenu.getItems().add(applyItem);
 
+			contextMenu.getItems().add(new SeparatorMenuItem());
+
+			final MenuItem openOptionDialogItem = new MenuItem();
+			openOptionDialogItem.setText("Options...");
+			openOptionDialogItem.setOnAction(e -> openOptionDialog(cell.getItem()));
+			contextMenu.getItems().add(openOptionDialogItem);
+
 			cell.setContextMenu(contextMenu);
 			return cell;
 		});
@@ -159,6 +166,13 @@ public class BodyPresenter implements ModelListener, UserPreferenceListener, Ini
 
 	public void setOnApplyAction(Consumer<Software> callbackApply) {
 		this.callbackApply = callbackApply;
+	}
+
+	public void setOnOpenOptionDialogAction(Consumer<Software> callbackOpenOptionDialog) {
+		this.callbackOpenOptionDialog = callbackOpenOptionDialog;
+	}
+
+	public void setOnShowUserPreferences(final Consumer<?> callbackShowUserPreferences) {
 		this.callbackShowUserPreferences = callbackShowUserPreferences;
 	}
 
@@ -187,6 +201,10 @@ public class BodyPresenter implements ModelListener, UserPreferenceListener, Ini
 
 	public void apply(final Software software) {
 		callbackApply.accept(software);
+	}
+
+	public void openOptionDialog(final Software software) {
+		callbackOpenOptionDialog.accept(software);
 	}
 
 	@FXML
