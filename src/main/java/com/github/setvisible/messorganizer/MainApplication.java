@@ -196,33 +196,35 @@ public class MainApplication extends Application {
 	}
 
 	private void exit() {
-		final Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-		alert.setTitle("Mess Organizer");
-		alert.setHeaderText("Do you really want to exit?");
-		alert.initModality(Modality.APPLICATION_MODAL);
-		alert.initOwner(primaryStage);
-		alert.getButtonTypes().setAll(ButtonType.YES, ButtonType.NO);
-
-		final Button buttonExit = (Button) alert.getDialogPane().lookupButton(ButtonType.YES);
-		buttonExit.setText("Yes");
-		buttonExit.setDefaultButton(false);
-
-		final Button buttonCancel = (Button) alert.getDialogPane().lookupButton(ButtonType.NO);
-		buttonCancel.setText("No");
-
-		final Optional<ButtonType> result = alert.showAndWait();
-		if (result.isPresent() && result.get() == ButtonType.YES) {
+		final String headerText = "Do you really want to exit?";
+		showConfirmationDialog(headerText, e -> {
 			this.userPreference.writeUserPreference();
 			this.writeSettings();
 			Platform.exit();
-		}
+		});
 	}
 
 	// ************************************************************************
 	private void applyAll() {
+		final String headerText = "Do you really want to apply the proposed actions for all the files?";
+		showConfirmationDialog(headerText, e -> {
+
+			// TODO
+			System.out.println("Apply All");
+		});
+
 	}
 
 	private void apply(final Software software) {
+		final String headerText = "Do you really want to " + software.getDecision() + " '" + software.getFileName()
+				+ "'?";
+		showConfirmationDialog(headerText, e -> {
+
+			// TODO
+
+			System.out.println("Apply:" + software.getFileName());
+		});
+	}
 
 	private void openOptionDialog(final Software software) {
 		final OptionDialog dialog = new OptionDialog(primaryStage);
@@ -258,6 +260,30 @@ public class MainApplication extends Application {
 		alert.initOwner(primaryStage);
 		alert.getButtonTypes().setAll(ButtonType.OK);
 		alert.show();
+	}
+
+	// ************************************************************************
+	// Helpers
+	// ************************************************************************
+	private void showConfirmationDialog(final String headerText, final Consumer<?> callback) {
+		final Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+		alert.setTitle("Mess Organizer");
+		alert.setHeaderText(headerText);
+		alert.initModality(Modality.APPLICATION_MODAL);
+		alert.initOwner(primaryStage);
+		alert.getButtonTypes().setAll(ButtonType.YES, ButtonType.NO);
+
+		final Button buttonExit = (Button) alert.getDialogPane().lookupButton(ButtonType.YES);
+		buttonExit.setText("Yes");
+		buttonExit.setDefaultButton(false);
+
+		final Button buttonCancel = (Button) alert.getDialogPane().lookupButton(ButtonType.NO);
+		buttonCancel.setText("No");
+
+		final Optional<ButtonType> result = alert.showAndWait();
+		if (result.isPresent() && result.get() == ButtonType.YES) {
+			callback.accept(null);
+		}
 	}
 
 	// ************************************************************************
