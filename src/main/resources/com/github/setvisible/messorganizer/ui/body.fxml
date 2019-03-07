@@ -23,6 +23,7 @@
 			<rowConstraints>
 				<RowConstraints />
 				<RowConstraints minHeight="10.0" vgrow="ALWAYS" />
+				<RowConstraints />
 			</rowConstraints>
 			<children>
 				<TitledPane animated="false" collapsible="false" text="Directories">
@@ -49,6 +50,11 @@
 								</GridPane>
 							</children>
 						</AnchorPane>
+					</content>
+				</TitledPane>
+				<TitledPane animated="false" expanded="false" text="Details" GridPane.columnSpan="2147483647" GridPane.rowIndex="2">
+					<content>
+						<fx:include fx:id="detailPanel" source="widget/detailpanel.fxml" />
 					</content>
 				</TitledPane>
 				<VBox GridPane.columnIndex="1">

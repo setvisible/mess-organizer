@@ -16,6 +16,7 @@ import com.github.setvisible.messorganizer.core.Software;
 import com.github.setvisible.messorganizer.settings.UserPreference;
 import com.github.setvisible.messorganizer.settings.UserPreferenceListener;
 import com.github.setvisible.messorganizer.ui.cell.SoftwareCell;
+import com.github.setvisible.messorganizer.ui.widget.DetailPanelPresenter;
 
 import javafx.beans.binding.Bindings;
 import javafx.fxml.FXML;
@@ -40,6 +41,8 @@ public class BodyPresenter implements ModelListener, UserPreferenceListener, Ini
 	private TextField sourceDirectory;
 	@FXML
 	private ListView<Software> listView;
+	@FXML
+	private DetailPanelPresenter detailPanelController;
 	@FXML
 	private Button resetButton;
 	@FXML
@@ -120,6 +123,7 @@ public class BodyPresenter implements ModelListener, UserPreferenceListener, Ini
 	 * @param software the software or null
 	 */
 	private void showSoftwareDetails(final Software software) {
+		detailPanelController.setSoftware(software);
 	}
 
 	private static void copyDetails(final Software software) {
