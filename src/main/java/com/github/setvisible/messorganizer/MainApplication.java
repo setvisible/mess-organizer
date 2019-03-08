@@ -3,6 +3,7 @@ package com.github.setvisible.messorganizer;
 import java.io.File;
 import java.util.Optional;
 import java.util.ResourceBundle;
+import java.util.function.Consumer;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 
@@ -10,10 +11,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.github.setvisible.messorganizer.core.Model;
+import com.github.setvisible.messorganizer.core.Software;
 import com.github.setvisible.messorganizer.io.Parser;
 import com.github.setvisible.messorganizer.settings.UserPreference;
 import com.github.setvisible.messorganizer.ui.MainWindowPresenter;
 import com.github.setvisible.messorganizer.ui.MainWindowView;
+import com.github.setvisible.messorganizer.ui.dialog.OptionDialog;
 import com.github.setvisible.messorganizer.ui.dialog.PreferenceDialog;
 import com.github.setvisible.messorganizer.ui.dialog.StatisticsDialog;
 
@@ -48,7 +51,7 @@ public class MainApplication extends Application {
 	}
 
 	@Override
-	public void start(Stage stage) {
+	public void start(final Stage stage) {
 		this.primaryStage = stage;
 
 		primaryStage.setOnCloseRequest(event -> {
@@ -83,6 +86,9 @@ public class MainApplication extends Application {
 		mainWindow.setSaveAsAction(e -> saveAs());
 		mainWindow.setSaveAction(e -> save());
 		mainWindow.setExitAction(e -> exit());
+		mainWindow.setOnApplyAllAction(e -> applyAll());
+		mainWindow.setOnApplyAction(e -> apply(e));
+		mainWindow.setOnOpenOptionDialogAction(e -> openOptionDialog(e));
 		mainWindow.setOnShowStatisticsAction(e -> showStatistics());
 		mainWindow.setOnShowUserPreferencesAction(e -> showUserPreferences());
 		mainWindow.setOnAboutAction(e -> about());
@@ -103,8 +109,8 @@ public class MainApplication extends Application {
 	 * @return
 	 */
 	public File getCurrentFilePath() {
-		Preferences prefs = Preferences.userNodeForPackage(MainApplication.class);
-		String filePath = prefs.get("filePath", null);
+		final Preferences prefs = Preferences.userNodeForPackage(MainApplication.class);
+		final String filePath = prefs.get("filePath", null);
 		if (filePath != null) {
 			return new File(filePath);
 		} else {
@@ -118,8 +124,8 @@ public class MainApplication extends Application {
 	 * 
 	 * @param file the file or null to remove the path
 	 */
-	public void setCurrentFilePath(File file) {
-		Preferences prefs = Preferences.userNodeForPackage(MainApplication.class);
+	public void setCurrentFilePath(final File file) {
+		final Preferences prefs = Preferences.userNodeForPackage(MainApplication.class);
 		if (file != null) {
 			prefs.put("filePath", file.getPath());
 			primaryStage.setTitle("Mess Organizer - " + file.getName());
@@ -144,8 +150,8 @@ public class MainApplication extends Application {
 				Parser.loadDataFromFile(file, model);
 				setCurrentFilePath(file);
 
-			} catch (Exception e) { // catches ANY exception
-				Alert alert = new Alert(AlertType.ERROR);
+			} catch (final Exception e) { // catches ANY exception
+				final Alert alert = new Alert(AlertType.ERROR);
 				alert.setTitle("Error");
 				alert.setHeaderText("Could not load data");
 				alert.setContentText("Could not load data from file:\n" + file.getPath());
@@ -161,8 +167,8 @@ public class MainApplication extends Application {
 			try {
 				Parser.saveDataToFile(file, model);
 
-			} catch (Exception e) { // catches ANY exception
-				Alert alert = new Alert(AlertType.ERROR);
+			} catch (final Exception e) { // catches ANY exception
+				final Alert alert = new Alert(AlertType.ERROR);
 				alert.setTitle("Error");
 				alert.setHeaderText("Could not save data");
 				alert.setContentText("Could not save data to file:\n" + file.getPath());
@@ -190,29 +196,46 @@ public class MainApplication extends Application {
 	}
 
 	private void exit() {
-		final Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-		alert.setTitle("Mess Organizer");
-		alert.setHeaderText("Do you really want to exit?");
-		alert.initModality(Modality.APPLICATION_MODAL);
-		alert.initOwner(primaryStage);
-		alert.getButtonTypes().setAll(ButtonType.YES, ButtonType.NO);
-
-		final Button buttonExit = (Button) alert.getDialogPane().lookupButton(ButtonType.YES);
-		buttonExit.setText("Yes");
-		buttonExit.setDefaultButton(false);
-
-		final Button buttonCancel = (Button) alert.getDialogPane().lookupButton(ButtonType.NO);
-		buttonCancel.setText("No");
-
-		final Optional<ButtonType> result = alert.showAndWait();
-		if (result.isPresent() && result.get() == ButtonType.YES) {
+		final String headerText = "Do you really want to exit?";
+		showConfirmationDialog(headerText, e -> {
 			this.userPreference.writeUserPreference();
 			this.writeSettings();
 			Platform.exit();
-		}
+		});
 	}
 
 	// ************************************************************************
+	private void applyAll() {
+		final String headerText = "Do you really want to apply the proposed actions for all the files?";
+		showConfirmationDialog(headerText, e -> {
+
+			// TODO
+			System.out.println("Apply All");
+		});
+
+	}
+
+	private void apply(final Software software) {
+		final String headerText = "Do you really want to " + software.getDecision() + " '" + software.getFileName()
+				+ "'?";
+		showConfirmationDialog(headerText, e -> {
+
+			// TODO
+
+			System.out.println("Apply:" + software.getFileName());
+		});
+	}
+
+	private void openOptionDialog(final Software software) {
+		final OptionDialog dialog = new OptionDialog(primaryStage);
+		dialog.setSoftware(software);
+		final Optional<ButtonType> result = dialog.showAndWait();
+		if (result.isPresent() && result.get() == ButtonType.OK) {
+			software.setDecision(dialog.getDecision());
+			software.setDestinationPathName(dialog.getDestinationPathName());
+		}
+	}
+
 	private void showStatistics() {
 		final StatisticsDialog dialog = new StatisticsDialog(primaryStage);
 		dialog.setSoftwareData(model.getSoftwareData());
@@ -237,6 +260,30 @@ public class MainApplication extends Application {
 		alert.initOwner(primaryStage);
 		alert.getButtonTypes().setAll(ButtonType.OK);
 		alert.show();
+	}
+
+	// ************************************************************************
+	// Helpers
+	// ************************************************************************
+	private void showConfirmationDialog(final String headerText, final Consumer<?> callback) {
+		final Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+		alert.setTitle("Mess Organizer");
+		alert.setHeaderText(headerText);
+		alert.initModality(Modality.APPLICATION_MODAL);
+		alert.initOwner(primaryStage);
+		alert.getButtonTypes().setAll(ButtonType.YES, ButtonType.NO);
+
+		final Button buttonExit = (Button) alert.getDialogPane().lookupButton(ButtonType.YES);
+		buttonExit.setText("Yes");
+		buttonExit.setDefaultButton(false);
+
+		final Button buttonCancel = (Button) alert.getDialogPane().lookupButton(ButtonType.NO);
+		buttonCancel.setText("No");
+
+		final Optional<ButtonType> result = alert.showAndWait();
+		if (result.isPresent() && result.get() == ButtonType.YES) {
+			callback.accept(null);
+		}
 	}
 
 	// ************************************************************************

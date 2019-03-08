@@ -23,7 +23,7 @@ import javafx.stage.Stage;
  */
 public class StatisticsDialog extends Dialog<ButtonType> {
 
-	private final Logger logger = LoggerFactory.getLogger(StatisticsDialog.class);
+	private static final Logger logger = LoggerFactory.getLogger(StatisticsDialog.class);
 
 	private StatisticsDialogController controller;
 

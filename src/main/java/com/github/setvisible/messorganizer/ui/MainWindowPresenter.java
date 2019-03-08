@@ -6,6 +6,7 @@ import java.util.function.Consumer;
 
 import com.github.setvisible.messorganizer.core.Model;
 import com.github.setvisible.messorganizer.core.ModelListener;
+import com.github.setvisible.messorganizer.core.Software;
 import com.github.setvisible.messorganizer.settings.UserPreference;
 
 import javafx.fxml.FXML;
@@ -51,6 +52,9 @@ public class MainWindowPresenter implements ModelListener, Initializable {
 	private Consumer<?> callbackSave;
 	private Consumer<?> callbackSaveAs;
 	private Consumer<?> callbackExit;
+	private Consumer<?> callbackApplyAll;
+	private Consumer<Software> callbackApply;
+	private Consumer<Software> callbackOpenOptionDialog;
 	private Consumer<?> callbackShowStatistics;
 	private Consumer<?> callbackShowUserPreferences;
 	private Consumer<?> callbackAbout;
@@ -73,6 +77,21 @@ public class MainWindowPresenter implements ModelListener, Initializable {
 
 	public void setExitAction(Consumer<?> callbackExit) {
 		this.callbackExit = callbackExit;
+	}
+
+	public void setOnApplyAllAction(Consumer<?> callbackApplyAll) {
+		this.callbackApplyAll = callbackApplyAll;
+		this.bodyController.setOnApplyAllAction(callbackApplyAll);
+	}
+
+	public void setOnApplyAction(Consumer<Software> callbackApply) {
+		this.callbackApply = callbackApply;
+		this.bodyController.setOnApplyAction(callbackApply);
+	}
+
+	public void setOnOpenOptionDialogAction(Consumer<Software> callbackOpenOptionDialog) {
+		this.callbackOpenOptionDialog = callbackOpenOptionDialog;
+		this.bodyController.setOnOpenOptionDialogAction(callbackOpenOptionDialog);
 	}
 
 	public void setOnShowStatisticsAction(Consumer<?> callbackShowStatistics) {
@@ -114,6 +133,21 @@ public class MainWindowPresenter implements ModelListener, Initializable {
 	@FXML
 	private void exit() {
 		callbackExit.accept(null);
+	}
+
+	@FXML
+	private void applyAll() {
+		callbackApplyAll.accept(null);
+	}
+
+	@FXML
+	private void apply() {
+		callbackApply.accept(bodyController.getSelectedItem());
+	}
+
+	@FXML
+	private void openOptionDialog() {
+		callbackOpenOptionDialog.accept(bodyController.getSelectedItem());
 	}
 
 	@FXML

@@ -22,7 +22,7 @@ import javafx.stage.Stage;
  */
 public class PreferenceDialog extends Dialog<ButtonType> {
 
-	private final Logger logger = LoggerFactory.getLogger(PreferenceDialog.class);
+	private static final Logger logger = LoggerFactory.getLogger(PreferenceDialog.class);
 
 	private PreferenceDialogController controller;
 
