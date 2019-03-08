@@ -4,6 +4,8 @@ import java.net.URL;
 import java.util.ResourceBundle;
 import java.util.function.Consumer;
 
+import com.github.setvisible.messorganizer.core.Model;
+import com.github.setvisible.messorganizer.core.ModelListener;
 import com.github.setvisible.messorganizer.core.Software;
 import com.github.setvisible.messorganizer.settings.UserPreference;
 import com.github.setvisible.messorganizer.settings.UserPreferenceListener;
@@ -16,8 +18,9 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 
-public class BodyPresenter implements UserPreferenceListener, Initializable {
+public class BodyPresenter implements ModelListener, UserPreferenceListener, Initializable {
 
+	private Model model;
 	private UserPreference userPreference;
 
 	@FXML
@@ -44,8 +47,8 @@ public class BodyPresenter implements UserPreferenceListener, Initializable {
 	public void initialize(final URL url, final ResourceBundle resourceBundle) {
 
 		// Initialize the software table with the two columns.
-		softwareNameColumn.setCellValueFactory(cellData -> cellData.getValue().firstSoftwareProperty());
-		vendorNameColumn.setCellValueFactory(cellData -> cellData.getValue().vendorNameProperty());
+		softwareNameColumn.setCellValueFactory(cellData -> cellData.getValue().fileNameProperty());
+		vendorNameColumn.setCellValueFactory(cellData -> cellData.getValue().fullFileNameProperty());
 
 		// Clear software details.
 		showSoftwareDetails(null);
@@ -55,6 +58,19 @@ public class BodyPresenter implements UserPreferenceListener, Initializable {
 		softwareTable.getSelectionModel().selectedItemProperty()
 				.addListener((observable, oldValue, newValue) -> showSoftwareDetails(newValue));
 
+
+	}
+
+	public void setModel(final Model model) {
+		if (this.model != null) {
+			this.model.removeListener(this);
+			softwareTable.getItems().clear();
+		}
+		this.model = model;
+		if (this.model != null) {
+			this.model.addListener(this);
+			softwareTable.setItems(this.model.getSoftwareData());
+		}
 	}
 
 	}
@@ -68,7 +84,7 @@ public class BodyPresenter implements UserPreferenceListener, Initializable {
 	private void showSoftwareDetails(final Software software) {
 		if (software != null) {
 			// Fill the labels with info from the software object.
-			actionLabel.setText(software.getSoftwareName());
+			actionLabel.setText(software.getFileName());
 		} else {
 			// Person is null, remove all the text.
 			actionLabel.setText("");

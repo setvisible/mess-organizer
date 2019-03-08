@@ -9,8 +9,8 @@ import java.util.prefs.Preferences;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.github.setvisible.messorganizer.core.Software;
-import com.github.setvisible.messorganizer.core.SoftwareListWrapper;
+import com.github.setvisible.messorganizer.core.Model;
+import com.github.setvisible.messorganizer.io.Parser;
 import com.github.setvisible.messorganizer.settings.UserPreference;
 import com.github.setvisible.messorganizer.ui.MainWindowPresenter;
 import com.github.setvisible.messorganizer.ui.MainWindowView;
@@ -36,6 +36,7 @@ public class MainApplication extends Application {
 
 	private static final Logger logger = LoggerFactory.getLogger(MainApplication.class);
 
+	private final Model model = new Model();
 	private final UserPreference userPreference = new UserPreference();
 
 	private Stage primaryStage;
@@ -74,6 +75,7 @@ public class MainApplication extends Application {
 
 		final MainWindowPresenter mainWindow = (MainWindowPresenter) mainWindowView.getPresenter();
 
+		mainWindow.setModel(model);
 		mainWindow.setUserPreference(userPreference);
 
 		mainWindow.setNewFileAction(e -> newFile());
