@@ -195,7 +195,7 @@ public class BodyPresenter implements ModelListener, UserPreferenceListener, Ini
 		final File sourcePath = new File(userPreference.getSourceDirectory());
 		final File targetPath = new File(userPreference.getTargetDirectory());
 
-		model.analyze(sourcePath, targetPath);
+		model.runAnalysis(sourcePath, targetPath);
 	}
 
 	@FXML

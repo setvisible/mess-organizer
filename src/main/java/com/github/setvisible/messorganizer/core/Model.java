@@ -7,6 +7,7 @@ import javax.swing.event.EventListenerList;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.concurrent.WorkerStateEvent;
 
 public class Model {
 
@@ -20,27 +21,39 @@ public class Model {
 		notifyDataChanged();
 	}
 
-	public void analyze(final File sourceDirectory, final File targetDirectory) {
-		clear();
-
-		final Service service = new Service();
-		service.setSourceDirectory(sourceDirectory);
-		service.setTargetDirectory(targetDirectory);
-		final List<Software> softwares = service.analyze();
-
-		for (final Software software : softwares) {
-			softwareData.add(software);
-		}
-
-		notifyDataChanged();
-	}
-
-	public void applyAnalysis() {
-
-	}
-
 	public ObservableList<Software> getSoftwareData() {
 		return softwareData;
+	}
+
+	// *************************************************************************
+	/**
+	 * Runs an asynchronous analysis.
+	 */
+	public void runAnalysis(final File sourceDirectory, final File targetDirectory) {
+		clear();
+
+		final SimilarityService service = new SimilarityService();
+		service.setSourceDirectory(sourceDirectory);
+		service.setTargetDirectory(targetDirectory);
+
+		service.setOnSucceeded((WorkerStateEvent event) -> {
+			final List<Software> softwares = service.getValue();
+			for (final Software software : softwares) {
+				softwareData.add(software);
+			}
+			notifyDataChanged();
+
+		});
+		service.start();
+	}
+
+	// *************************************************************************
+	public void applyAnalysis(final Software software) throws IOException {
+		// TODO
+	}
+
+	public void applyAllAnalyses() throws IOException {
+		// TODO
 	}
 
 	// *************************************************************************
