@@ -83,6 +83,7 @@ public class BodyPresenter implements ModelListener, UserPreferenceListener, Ini
 			final MenuItem applyItem = new MenuItem();
 			applyItem.setText("Apply");
 			applyItem.setOnAction(e -> apply(cell.getItem()));
+			applyItem.disableProperty().bind(cell.hasDestinationProperty().not());
 			contextMenu.getItems().add(applyItem);
 
 			contextMenu.getItems().add(new SeparatorMenuItem());
@@ -101,8 +102,21 @@ public class BodyPresenter implements ModelListener, UserPreferenceListener, Ini
 		listView.getSelectionModel().selectedItemProperty()
 				.addListener((obs, old, current) -> showSoftwareDetails(current));
 
-		onDataChanged();
+		updateWidgets();
 	}
+
+	private void updateWidgets() {
+		final boolean isEmpty = (this.model != null) ? this.model.getSoftwareData().isEmpty() : true;
+		resetButton.setDisable(isEmpty);
+		analyzeButton.setDisable(!isEmpty);
+		applyAllButton.setDisable(isEmpty);
+
+		progressIndicator.setVisible(false);
+
+		// Clear software details.
+		showSoftwareDetails(null);
+	}
+
 
 	public void setModel(final Model model) {
 		if (this.model != null) {
@@ -224,14 +238,9 @@ public class BodyPresenter implements ModelListener, UserPreferenceListener, Ini
 	// Model Listeners
 	// ************************************************************************
 	@Override
-	public void onDataChanged() {
-		final boolean isEmpty = (this.model != null) ? this.model.getSoftwareData().isEmpty() : true;
-		resetButton.setDisable(isEmpty);
-		analyzeButton.setDisable(!isEmpty);
-		applyAllButton.setDisable(isEmpty);
 
-		// Clear software details.
-		showSoftwareDetails(null);
+	public void onDataChanged() {
+		updateWidgets();
 	}
 
 	// ************************************************************************
