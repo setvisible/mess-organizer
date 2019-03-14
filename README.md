@@ -2,6 +2,11 @@
 
 Organizes the mess.
 
+## Screenshots
+
+![screenshot](screenshot/example1.png)
+
+
 ## Troubleshooting
 
 ### Windows
