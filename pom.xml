@@ -30,6 +30,7 @@
 		<!-- https://search.maven.org/classic/#search -->
 		<slf4j.version>1.7.25</slf4j.version>
 		<afterburner.version>1.7.0</afterburner.version>
+		<jna.version>5.2.0</jna.version>
 		<commons.io.version>2.6</commons.io.version>
 		<junit.version>4.12</junit.version>
 	</properties>
@@ -58,6 +59,20 @@
 			<scope>compile</scope>
 		</dependency>
 
+		<!-- Java Native Access -->
+		<!-- JNA provides Java programs easy access to native shared libraries (DLLs on Windows) -->
+		<!-- without writing anything but Java code no JNI or native code is required. -->
+		<dependency>
+			<groupId>net.java.dev.jna</groupId>
+			<artifactId>jna</artifactId>
+			<version>${jna.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>net.java.dev.jna</groupId>
+			<artifactId>jna-platform</artifactId>
+			<version>${jna.version}</version>
+		</dependency>		
+		
 		<!-- Apache Commons IO -->
 		<!-- Library of utilities to assist with developing IO functionality -->
 		<dependency>

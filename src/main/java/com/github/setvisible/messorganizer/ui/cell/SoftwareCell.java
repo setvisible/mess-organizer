@@ -6,6 +6,8 @@ import com.github.setvisible.messorganizer.core.Decision;
 import com.github.setvisible.messorganizer.core.Software;
 import com.github.setvisible.messorganizer.util.DateUtil;
 
+import javafx.beans.binding.Bindings;
+import javafx.beans.binding.StringExpression;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -129,29 +131,40 @@ public class SoftwareCell extends ListCell<Software> {
 	@Override
 	protected void updateItem(final Software software, final boolean empty) {
 		super.updateItem(software, empty);
-		setText(null);
-		setGraphic(null);
-		setContentDisplay(ContentDisplay.LEFT);
-		if (!empty && software != null) {
 
+		setText(null);
+
+		if (empty || software == null) {
+			setGraphic(null);
+			setContentDisplay(ContentDisplay.LEFT);
+
+		} else {
 			fileIcon.setImage(software.getFileIcon());
 			fileLabel.setText(software.getFileName());
-			destinationLabel.setText(formatDestinationLabel(software));
 			similarityLabel.setText(formatSimilarityLabel(software));
 			infoLabel.setText(formatInfoLable(software));
 
-			fileNameProperty.set(software.getFileName());
-			boolean hasDestination = software.getDecision() == Decision.MOVE
-					|| software.getDecision() == Decision.REPLACE;
-			hasDestinationProperty.set(hasDestination);
+			fileNameProperty.bind(software.fileNameProperty());
+			hasDestinationProperty.bind(software.decisionProperty().isNotEqualTo(Decision.DONT_MOVE));
 
-			software.decisionProperty().addListener(e -> {
-				destinationLabel.setText(formatDestinationLabel(software));
-			});
+			destinationLabel.textProperty().bind(bindDestinationLabel(software));
+
+			applyButton.disableProperty().bind(software.decisionProperty().isEqualTo(Decision.DONT_MOVE));
 
 			setGraphic(content);
 			setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
 		}
+	}
+
+	private static StringExpression bindDestinationLabel(final Software software) {
+		final String destination = software.getDestinationPathName() != null ? software.getDestinationPathName() : "";
+		return Bindings //
+				.when(software.decisionProperty().isEqualTo(Decision.MOVE))
+				.then(String.format("Move to: %s", destination)) //
+				.otherwise(Bindings //
+						.when(software.decisionProperty().isEqualTo(Decision.REPLACE)) //
+						.then(String.format("Replace: %s", destination)) //
+						.otherwise("No action"));
 	}
 
 	// ************************************************************************
@@ -179,6 +192,7 @@ public class SoftwareCell extends ListCell<Software> {
 	// ************************************************************************
 	// GUI
 	// ************************************************************************
+	final StringProperty destinationTitleProperty = new SimpleStringProperty();
 	final StringProperty fileNameProperty = new SimpleStringProperty();
 	final BooleanProperty hasDestinationProperty = new SimpleBooleanProperty();
 
@@ -207,22 +221,6 @@ public class SoftwareCell extends ListCell<Software> {
 
 	private static void setNodeLocation(final int rowIndex, final int columnIndex, final Node child) {
 		GridPane.setConstraints(child, columnIndex, rowIndex);
-	}
-
-	private static String formatDestinationLabel(final Software software) {
-		assert software != null;
-		final String destination = software.getDestinationPathName() != null ? software.getDestinationPathName() : "";
-		switch (software.getDecision()) {
-		case MOVE:
-			return String.format("Destination: %s", destination);
-
-		case REPLACE:
-			return String.format("Replace: %s", destination);
-
-		case DONT_MOVE:
-		default:
-			return "No action";
-		}
 	}
 
 	private static String formatSimilarityLabel(final Software software) {
