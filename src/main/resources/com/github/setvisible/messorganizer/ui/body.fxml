@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.ProgressIndicator?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.TitledPane?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+
+<AnchorPane xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.github.setvisible.messorganizer.ui.BodyPresenter">
+	<children>
+		<GridPane hgap="10.0" layoutX="75.0" vgap="10.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+			<columnConstraints>
+				<ColumnConstraints hgrow="ALWAYS" minWidth="10.0" />
+				<ColumnConstraints minWidth="10.0" />
+			</columnConstraints>
+			<rowConstraints>
+				<RowConstraints />
+				<RowConstraints minHeight="10.0" vgrow="ALWAYS" />
+				<RowConstraints />
+			</rowConstraints>
+			<children>
+				<TitledPane animated="false" collapsible="false" text="Directories">
+					<content>
+						<AnchorPane>
+							<children>
+								<GridPane layoutX="0.0" layoutY="0.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+									<columnConstraints>
+										<ColumnConstraints minWidth="10.0" />
+										<ColumnConstraints hgrow="ALWAYS" minWidth="10.0" />
+										<ColumnConstraints minWidth="10.0" />
+									</columnConstraints>
+									<rowConstraints>
+										<RowConstraints minHeight="10.0" prefHeight="30.0" />
+										<RowConstraints minHeight="10.0" prefHeight="30.0" />
+									</rowConstraints>
+									<children>
+										<Label text="Source:" />
+										<Label text="Destination:" GridPane.rowIndex="1" />
+										<TextField fx:id="sourceDirectory" editable="false" GridPane.columnIndex="1" />
+										<TextField fx:id="targetDirectory" editable="false" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+										<Button mnemonicParsing="false" onAction="#showUserPreferences" text="Change..." GridPane.columnIndex="2" GridPane.rowIndex="1" />
+									</children>
+								</GridPane>
+							</children>
+						</AnchorPane>
+					</content>
+				</TitledPane>
+				<TitledPane animated="false" expanded="false" text="Details" GridPane.columnSpan="2147483647" GridPane.rowIndex="2">
+					<content>
+						<fx:include fx:id="detailPanel" source="widget/detailpanel.fxml" />
+					</content>
+				</TitledPane>
+				<VBox GridPane.columnIndex="1">
+					<children>
+						<VBox spacing="5.0" VBox.vgrow="ALWAYS">
+							<children>
+								<HBox spacing="10.0" />
+								<Button fx:id="analyzeButton" minWidth="100.0" mnemonicParsing="false" onAction="#analyze" text="Analyze..." />
+								<Button fx:id="applyAllButton" minWidth="100.0" mnemonicParsing="false" onAction="#applyAll" text="Apply All" />
+								<Button fx:id="resetButton" minWidth="100.0" mnemonicParsing="false" onAction="#reset" text="Reset" />
+							</children>
+						</VBox>
+					</children>
+				</VBox>
+				<StackPane GridPane.columnSpan="2147483647" GridPane.rowIndex="1">
+					<children>
+						<ListView fx:id="listView" prefHeight="200.0" />
+						<ProgressIndicator fx:id="progressIndicator" maxHeight="-Infinity" maxWidth="-Infinity" StackPane.alignment="CENTER" />
+					</children>
+				</StackPane>
+			</children>
+			<padding>
+				<Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+			</padding>
+		</GridPane>
+	</children>
+</AnchorPane>
