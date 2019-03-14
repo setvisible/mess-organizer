@@ -32,6 +32,8 @@ public class Model {
 	public void runAnalysis(final File sourceDirectory, final File targetDirectory) {
 		clear();
 
+		notifyProcessing();
+
 		final SimilarityService service = new SimilarityService();
 		service.setSourceDirectory(sourceDirectory);
 		service.setTargetDirectory(targetDirectory);
@@ -41,6 +43,8 @@ public class Model {
 			for (final Software software : softwares) {
 				softwareData.add(software);
 			}
+
+			notifyProcessFinished();
 			notifyDataChanged();
 
 		});
@@ -74,6 +78,18 @@ public class Model {
 	// *************************************************************************
 	// Listeners Notifications
 	// *************************************************************************
+	private void notifyProcessing() {
+		for (final ModelListener listener : getListeners()) {
+			listener.onProcessing();
+		}
+	}
+
+	private void notifyProcessFinished() {
+		for (final ModelListener listener : getListeners()) {
+			listener.onProcessFinished();
+		}
+	}
+
 	private void notifyDataChanged() {
 		for (final ModelListener listener : getListeners()) {
 			listener.onDataChanged();

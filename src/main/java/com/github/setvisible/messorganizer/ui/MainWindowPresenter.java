@@ -5,7 +5,7 @@ import java.util.ResourceBundle;
 import java.util.function.Consumer;
 
 import com.github.setvisible.messorganizer.core.Model;
-import com.github.setvisible.messorganizer.core.ModelListener;
+import com.github.setvisible.messorganizer.core.ModelAdapter;
 import com.github.setvisible.messorganizer.core.Software;
 import com.github.setvisible.messorganizer.settings.UserPreference;
 
@@ -15,7 +15,7 @@ import javafx.fxml.Initializable;
 /**
  * Main view of the application.
  */
-public class MainWindowPresenter implements ModelListener, Initializable {
+public class MainWindowPresenter extends ModelAdapter implements Initializable {
 
 	private Model model;
 

@@ -25,6 +25,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.ListView;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.SeparatorMenuItem;
 import javafx.scene.control.TextField;
 
@@ -39,6 +40,8 @@ public class BodyPresenter implements ModelListener, UserPreferenceListener, Ini
 	private TextField targetDirectory;
 	@FXML
 	private TextField sourceDirectory;
+	@FXML
+	private ProgressIndicator progressIndicator;
 	@FXML
 	private ListView<Software> listView;
 	@FXML
@@ -238,7 +241,17 @@ public class BodyPresenter implements ModelListener, UserPreferenceListener, Ini
 	// Model Listeners
 	// ************************************************************************
 	@Override
+	public void onProcessing() {
+		progressIndicator.setVisible(true);
+		progressIndicator.setProgress(ProgressIndicator.INDETERMINATE_PROGRESS);
+	}
 
+	@Override
+	public void onProcessFinished() {
+		progressIndicator.setVisible(false);
+	}
+
+	@Override
 	public void onDataChanged() {
 		updateWidgets();
 	}
