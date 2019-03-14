@@ -1,6 +1,7 @@
 package com.github.setvisible.messorganizer;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.function.Consumer;
@@ -150,7 +151,7 @@ public class MainApplication extends Application {
 				Parser.loadDataFromFile(file, model);
 				setCurrentFilePath(file);
 
-			} catch (final Exception e) { // catches ANY exception
+			} catch (final Exception e) {
 				final Alert alert = new Alert(AlertType.ERROR);
 				alert.setTitle("Error");
 				alert.setHeaderText("Could not load data");
@@ -167,7 +168,7 @@ public class MainApplication extends Application {
 			try {
 				Parser.saveDataToFile(file, model);
 
-			} catch (final Exception e) { // catches ANY exception
+			} catch (final Exception e) {
 				final Alert alert = new Alert(AlertType.ERROR);
 				alert.setTitle("Error");
 				alert.setHeaderText("Could not save data");
@@ -208,32 +209,31 @@ public class MainApplication extends Application {
 	private void applyAll() {
 		final String headerText = "Do you really want to apply the proposed actions for all the files?";
 		showConfirmationDialog(headerText, e -> {
-
-			// TODO
-			System.out.println("Apply All");
+			try {
+				model.applyAllAnalyses();
+			} catch (final IOException ex) {
+				showErrorDialog(ex.getMessage());
+			}
 		});
-
 	}
 
 	private void apply(final Software software) {
-		final String headerText = "Do you really want to " + software.getDecision() + " '" + software.getFileName()
-				+ "'?";
+		final String headerText = "Do you really want to " //
+				+ software.getDecision().toString() + " '" //
+				+ software.getFileName() + "'?";
 		showConfirmationDialog(headerText, e -> {
-
-			// TODO
-
-			System.out.println("Apply:" + software.getFileName());
+			try {
+				model.applyAnalysis(software);
+			} catch (final IOException ex) {
+				showErrorDialog(ex.getMessage());
+			}
 		});
 	}
 
 	private void openOptionDialog(final Software software) {
 		final OptionDialog dialog = new OptionDialog(primaryStage);
-		dialog.setSoftware(software);
-		final Optional<ButtonType> result = dialog.showAndWait();
-		if (result.isPresent() && result.get() == ButtonType.OK) {
-			software.setDecision(dialog.getDecision());
-			software.setDestinationPathName(dialog.getDestinationPathName());
-		}
+		dialog.setItem(software);
+		dialog.show();
 	}
 
 	private void showStatistics() {
@@ -265,6 +265,16 @@ public class MainApplication extends Application {
 	// ************************************************************************
 	// Helpers
 	// ************************************************************************
+	private void showErrorDialog(final String message) {
+		logger.warn(message);
+		final Alert alert = new Alert(Alert.AlertType.ERROR);
+		alert.setTitle("Error");
+		alert.setHeaderText(message);
+		alert.initModality(Modality.APPLICATION_MODAL);
+		alert.initOwner(primaryStage);
+		alert.show();
+	}
+
 	private void showConfirmationDialog(final String headerText, final Consumer<?> callback) {
 		final Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
 		alert.setTitle("Mess Organizer");

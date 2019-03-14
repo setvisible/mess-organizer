@@ -6,7 +6,7 @@ import java.util.ResourceBundle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.github.setvisible.messorganizer.core.Decision;
+import com.github.setvisible.messorganizer.core.Model;
 import com.github.setvisible.messorganizer.core.Software;
 
 import javafx.fxml.FXMLLoader;
@@ -26,6 +26,8 @@ public class OptionDialog extends Dialog<ButtonType> {
 	private static final Logger logger = LoggerFactory.getLogger(OptionDialog.class);
 
 	private OptionDialogController controller;
+	private Model model;
+	private Software software;
 
 	public OptionDialog(final Stage stage) {
 		assert stage != null;
@@ -49,6 +51,7 @@ public class OptionDialog extends Dialog<ButtonType> {
 			final Button buttonOk = (Button) this.getDialogPane().lookupButton(ButtonType.OK);
 			buttonOk.setText("Ok");
 			buttonOk.setDefaultButton(false);
+			buttonOk.setOnAction(e -> accept());
 
 			final Button buttonClose = (Button) this.getDialogPane().lookupButton(ButtonType.CANCEL);
 			buttonClose.setText(loader.getResources().getString("cancel"));
@@ -65,16 +68,16 @@ public class OptionDialog extends Dialog<ButtonType> {
 		}
 	}
 
-	public Decision getDecision() {
-		return controller.getDecision();
-	}
-
-	public String getDestinationPathName() {
-		return controller.getDestinationPathName();
-	}
-
-	public void setSoftware(final Software software) {
+	public void setItem(final Software software) {
+		this.software = software;
 		controller.setDecision(software.getDecision());
 		controller.setDestinationPathName(software.getDestinationPathName());
+	}
+
+	private void accept() {
+		if (software != null) {
+			software.setDecision(controller.getDecision());
+			software.setDestinationPathName(controller.getDestinationPathName());
+		}
 	}
 }

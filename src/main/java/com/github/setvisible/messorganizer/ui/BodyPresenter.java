@@ -25,6 +25,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.ListView;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.SeparatorMenuItem;
 import javafx.scene.control.TextField;
 
@@ -39,6 +40,8 @@ public class BodyPresenter implements ModelListener, UserPreferenceListener, Ini
 	private TextField targetDirectory;
 	@FXML
 	private TextField sourceDirectory;
+	@FXML
+	private ProgressIndicator progressIndicator;
 	@FXML
 	private ListView<Software> listView;
 	@FXML
@@ -83,6 +86,7 @@ public class BodyPresenter implements ModelListener, UserPreferenceListener, Ini
 			final MenuItem applyItem = new MenuItem();
 			applyItem.setText("Apply");
 			applyItem.setOnAction(e -> apply(cell.getItem()));
+			applyItem.disableProperty().bind(cell.hasDestinationProperty().not());
 			contextMenu.getItems().add(applyItem);
 
 			contextMenu.getItems().add(new SeparatorMenuItem());
@@ -101,8 +105,21 @@ public class BodyPresenter implements ModelListener, UserPreferenceListener, Ini
 		listView.getSelectionModel().selectedItemProperty()
 				.addListener((obs, old, current) -> showSoftwareDetails(current));
 
-		onDataChanged();
+		updateWidgets();
 	}
+
+	private void updateWidgets() {
+		final boolean isEmpty = (this.model != null) ? this.model.getSoftwareData().isEmpty() : true;
+		resetButton.setDisable(isEmpty);
+		analyzeButton.setDisable(!isEmpty);
+		applyAllButton.setDisable(isEmpty);
+
+		progressIndicator.setVisible(false);
+
+		// Clear software details.
+		showSoftwareDetails(null);
+	}
+
 
 	public void setModel(final Model model) {
 		if (this.model != null) {
@@ -195,7 +212,7 @@ public class BodyPresenter implements ModelListener, UserPreferenceListener, Ini
 		final File sourcePath = new File(userPreference.getSourceDirectory());
 		final File targetPath = new File(userPreference.getTargetDirectory());
 
-		model.analyze(sourcePath, targetPath);
+		model.runAnalysis(sourcePath, targetPath);
 	}
 
 	@FXML
@@ -224,14 +241,19 @@ public class BodyPresenter implements ModelListener, UserPreferenceListener, Ini
 	// Model Listeners
 	// ************************************************************************
 	@Override
-	public void onDataChanged() {
-		final boolean isEmpty = (this.model != null) ? this.model.getSoftwareData().isEmpty() : true;
-		resetButton.setDisable(isEmpty);
-		analyzeButton.setDisable(!isEmpty);
-		applyAllButton.setDisable(isEmpty);
+	public void onProcessing() {
+		progressIndicator.setVisible(true);
+		progressIndicator.setProgress(ProgressIndicator.INDETERMINATE_PROGRESS);
+	}
 
-		// Clear software details.
-		showSoftwareDetails(null);
+	@Override
+	public void onProcessFinished() {
+		progressIndicator.setVisible(false);
+	}
+
+	@Override
+	public void onDataChanged() {
+		updateWidgets();
 	}
 
 	// ************************************************************************
